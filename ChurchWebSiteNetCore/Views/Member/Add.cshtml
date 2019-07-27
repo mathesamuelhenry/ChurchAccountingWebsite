@@ -1,0 +1,58 @@
+﻿@model ChurchLibrary.Model.Contributor
+
+@{
+    ViewBag.Title = "Create Employee";
+}
+<h1>Add</h1>
+
+<h4>Member Model</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-controller="Member" asp-action="Add" method="post">
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label">First Name</label>
+                <input asp-for="FirstName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label">Last Name</label>
+                <input asp-for="LastName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="FamilyName" class="control-label">Family Name</label>
+                <input asp-for="FamilyName" class="form-control" />
+            </div>
+            <br />
+            <div class="form-group">
+                <button type="submit" value="submit" class="btn btn-primary" asp-controller="Member" asp-action="AddMember">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- <div class="row">
+    <div class="col-md-4">
+        <form asp-action="Add">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="RequestId" class="control-label"></label>
+                <input asp-for="RequestId" class="form-control" />
+                <span asp-validation-for="RequestId" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="ShowRequestId" />
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+    -->

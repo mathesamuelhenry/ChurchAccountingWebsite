@@ -1,0 +1,54 @@
+﻿@model ChurchLibrary.Model.Transaction
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a asp-controller="Transactions" asp-action="Index">Transactions</a></li>
+    <li class="breadcrumb-item active" aria-current="page"><a asp-controller="Transactions" asp-action="Details" asp-route-id="@Model.Id">Details</a></li>
+  </ol>
+</nav>
+
+<h2>Transaction Details</h2>
+
+<div class="row">
+    <div class="col-md-3">Account Name</div>
+    <div class="col-md-9">@Model.AccountName</div>
+</div>
+<div class="row">
+    <div class="col-md-3">Member/Type Name</div>
+    <div class="col-md-9">@Model.ContributorName</div>
+</div>
+<div class="row">
+    <div class="col-md-3">Transaction Type</div>
+    <div class="col-md-9">@Model.TransactionType</div>
+</div>
+<div class="row">
+    <div class="col-md-3">Transaction Mode</div>
+    <div class="col-md-9">@Model.TransactionMode</div>
+</div>
+<div class="row">
+    <div class="col-md-3">Tranaction Date</div>
+    <div class="col-md-9">@Model.TransactionDate</div>
+</div>
+<div class="row">
+    <div class="col-md-3">Category</div>
+    <div class="col-md-9">@Model.Category</div>
+</div>
+<div class="row">
+    <div class="col-md-3">Check #</div>
+    <div class="col-md-9">@Model.CheckNumber</div>
+</div>
+<div class="row">
+    <div class="col-md-3">Amount</div>
+    <div class="col-md-9">@Model.Amount</div>
+</div>
+<div class="row">
+    <div class="col-md-3">Note</div>
+    <div class="col-md-9">@Model.Note</div>
+</div>
+<br />
+<a class="btn-link text-primary" asp-controller="Transactions" asp-action="Index">Return to list</a>

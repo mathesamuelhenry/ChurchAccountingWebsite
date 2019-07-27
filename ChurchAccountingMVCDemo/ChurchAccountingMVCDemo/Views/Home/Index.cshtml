@@ -1,0 +1,140 @@
+﻿
+@model ChurchLibrary.Model.Base.Response.SearchBaseResponse<List<ChurchLibrary.Model.Transaction>>
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<br />
+<div class="alert alert-danger" role="alert">
+    <button type="button" class="close" data-dismiss="alert">
+        x
+    </button>
+    The server is currently down for maintenance.
+</div>
+
+<div class="jumbotron">
+    <h1>Church Website</h1>
+    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
+    <p>
+        <a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a>
+        <button class="btn btn-success btn-lg pull-right visible-lg">Large Layout</button>
+        <button class="btn btn-warning btn-lg pull-right visible-md">Medium Layout</button>
+        <button class="btn btn-danger btn-lg pull-right visible-sm">Small Layout</button>
+        <button class="btn btn-default btn-lg pull-right visible-xs">Extra Small Layout</button>
+    </p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Getting started</h2>
+        <p>
+            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
+            enables a clean separation of concerns and gives you full control over markup
+            for enjoyable, agile development.
+        </p>
+        <p><a class="btn btn-info btn-xs" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Get more libraries</h2>
+        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
+        <p><a class="btn btn-primary" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Web Hosting</h2>
+        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
+        <p><a class="btn btn-primary" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <blockquote>
+            <p>The best way to practice c# is to build projects</p>
+            <footer>Samuel Mathe</footer>
+        </blockquote>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Icon</th>
+                    <th>Account Name</th>
+                    <th>Contributor Name</th>
+                    <th>Category</th>
+                    <th>Transaction Type</th>
+                    <th>Transaction Mode</th>
+                    <th>Check Number</th>
+                    <th>Transaction Date</th>
+                    <th>Amount</th>
+                    <th>Note</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.data)
+                {
+                    <tr>
+                        <td><i class="far fa-address-card"></i></td>
+                        <td>@item.AccountName</td>
+                        <td>@item.ContributorName</td>
+                        <td>@item.Category</td>
+                        <td>@item.TransactionType</td>
+                        <td>@item.TransactionMode</td>
+                        <td>@item.CheckNumber</td>
+                        <td>@item.TransactionDate</td>
+                        <td>@item.Amount</td>
+                        <td>@item.Note</td>
+                    </tr>
+                }
+            </tbody>
+            <!--
+        <tr class="success">
+                <td><i class="fas fa-biking"></i></td>
+                <td>Samuel</td>
+                <td>Mathe</td>
+                <td>samuel.mathe@lexisnexis.com</td>
+            </tr>
+            <tr>
+                <td><i class="fab fa-avianex"></i></td>
+                <td>Samuel</td>
+                <td class="danger">Mathe</td>
+                <td class="text-primary">samuel.mathe@lexisnexis.com</td>
+            </tr>
+            <tr>
+                <td><i class="far fa-address-card"></i></td>
+                <td>Samuel</td>
+                <td>Mathe</td>
+                <td>samuel.mathe@lexisnexis.com</td>
+            </tr>
+        -->
+
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li>
+                    <a href="#" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                @for(int i = 0; i <= Model.totalcount; i++)
+                {
+                    if (i % 50 == 0)
+                    {
+                        <li>@Html.ActionLink($"{(i/50)+1}", "Index", "Home", new { startAt = i+1, maxRecords = 50, sortBy = "cn.date_added", sortOrder = "desc" }, null)</li>
+                    }
+                }
+                <li>
+                    <a href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
