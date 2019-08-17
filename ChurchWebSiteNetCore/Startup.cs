@@ -29,7 +29,7 @@ namespace ChurchWebSiteNetCore
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
+            
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -40,6 +40,7 @@ namespace ChurchWebSiteNetCore
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -54,6 +55,10 @@ namespace ChurchWebSiteNetCore
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute(
+                    name: "Oops",
+                    template: "{controller=Home}/{action=Privacy}"
+                    );
             });
         }
     }

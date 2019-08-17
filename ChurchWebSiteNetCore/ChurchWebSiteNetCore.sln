@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchAccountingApiClient",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChurchLibrary", "..\..\ChurchAPI\SamChurchAPI\ChurchLibrary\ChurchLibrary.csproj", "{5F01F004-A614-41DC-B5CF-084373321046}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Church.API.Client", "..\..\Final\Church.API.Client\Church.API.Client.csproj", "{F41ED05E-0231-4DF0-8701-72525EB72A16}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Church.API.Models", "..\..\Final\Church.API.Models\Church.API.Models.csproj", "{CE51E078-EE8F-420A-ADD6-B910770D8ED3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{5F01F004-A614-41DC-B5CF-084373321046}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F01F004-A614-41DC-B5CF-084373321046}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F01F004-A614-41DC-B5CF-084373321046}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F41ED05E-0231-4DF0-8701-72525EB72A16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F41ED05E-0231-4DF0-8701-72525EB72A16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F41ED05E-0231-4DF0-8701-72525EB72A16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F41ED05E-0231-4DF0-8701-72525EB72A16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE51E078-EE8F-420A-ADD6-B910770D8ED3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE51E078-EE8F-420A-ADD6-B910770D8ED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE51E078-EE8F-420A-ADD6-B910770D8ED3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE51E078-EE8F-420A-ADD6-B910770D8ED3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
