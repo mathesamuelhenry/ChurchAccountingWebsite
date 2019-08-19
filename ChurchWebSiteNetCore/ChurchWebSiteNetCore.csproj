@@ -17,10 +17,10 @@
 
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ChurchApiClient\ChurchAccountingApiClient\ChurchAccountingApiClient\ChurchAccountingApiClient.csproj" />
-    <ProjectReference Include="..\..\ChurchAPI\SamChurchAPI\ChurchLibrary\ChurchLibrary.csproj" />
-    <ProjectReference Include="..\..\Final\Church.API.Client\Church.API.Client.csproj" />
-    <ProjectReference Include="..\..\Final\Church.API.Models\Church.API.Models.csproj" />
+    <ProjectReference Include="..\..\..\ChurchApiClient\ChurchAccountingApiClient\ChurchAccountingApiClient\ChurchAccountingApiClient.csproj" />
+    <ProjectReference Include="..\..\..\ChurchAPI\SamChurchAPI\ChurchLibrary\ChurchLibrary.csproj" />
+    <ProjectReference Include="..\..\Church.API.Client\Church.API.Client.csproj" />
+    <ProjectReference Include="..\..\Church.API.Models\Church.API.Models.csproj" />
   </ItemGroup>
 
 </Project>

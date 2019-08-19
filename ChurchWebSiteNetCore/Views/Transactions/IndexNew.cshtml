@@ -1,0 +1,85 @@
+﻿@model IPagedList<Church.API.Models.Contribution>
+
+@{
+    ViewData["Title"] = "IndexNew";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // var pagedList = (IPagedList)ViewBag.Transactions;
+    var pagedList = (IPagedList)Model;
+    var categoryList = ViewBag.CategoryList;
+    var transactionTypeList = ViewBag.TransactionTypeList;
+    var transactionModeList = ViewBag.TransactionModeList;
+}
+
+@using X.PagedList.Mvc.Core; @*import this so we get our HTML Helper*@
+@using X.PagedList; @*import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@using X.PagedList.Mvc.Common
+
+<!-- import the included stylesheet for some (very basic) default styling
+<link href="/css/PagedList.css" rel="stylesheet" type="text/css" />-->
+
+<h1>Members</h1>
+
+@Html.PagedListPager(pagedList, page => Url.Action("IndexNew", new { page = page, pageSize = 10 }))
+
+@if (Model != null && Model.Count > 0)
+{
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-striped fixed-table-body">
+                <thead>
+                    <tr>
+                        <th scope="col">Account Name</th>
+                        <th scope="col">Contributor Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Transaction Type</th>
+                        <th scope="col">Transaction Mode</th>
+                        <th scope="col">Check #</th>
+                        <th scope="col">Transaction Date</th>
+                        <th scope="col">Amount</th>
+                        <!--<th scope="col">Date Added</th>
+                        <th scope="col">Date Changed</th>-->
+                        <th scope="col" class="text-nowrap"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var transaction in Model)
+                    {
+                        <tr>
+                            <td>@transaction.Account.AccountName</td>
+                            @{
+                                string contributorName = string.Empty;
+                                if (transaction.Contributor == null)
+                                {
+                                    contributorName = transaction.ContributionName;
+                                }
+                                else
+                                {
+                                    contributorName = string.Concat(transaction.Contributor.FirstName, " ", transaction.Contributor.LastName);
+                                }
+                            }
+                            <td>@contributorName</td>
+                            <td>@categoryList[transaction.Category]</td>
+                            <td>@transactionTypeList[transaction.TransactionType.ToString()]</td>
+                            <td>@transactionModeList[transaction.TransactionMode.ToString()]</td>
+                            <td>@transaction.CheckNumber</td>
+                            <td>@transaction.TransactionDate</td>
+                            <td>@transaction.Amount</td>
+                            <!--<td>@transaction.DateAdded</td>
+                            <td>@transaction.DateChanged</td>-->
+                            <td class="text-nowrap">
+                                <a class="btn btn-sm btn-primary" asp-controller="Transaction" asp-action="Details">View</a>
+                                <a class="btn btn-sm btn-primary" asp-controller="Member" asp-action="Details">Edit</a>
+                                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<!-- output a paging control that lets the user navigation to the previous page, next page, etc
+@Html.PagedListPager(pagedList, page => Url.Action("Index", new { page }))-->
+
+@Html.PagedListPager(pagedList, page => Url.Action("IndexNew", new { page = page, pageSize = 10 }))
