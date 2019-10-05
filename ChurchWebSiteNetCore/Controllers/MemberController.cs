@@ -7,6 +7,7 @@ using ChurchLibrary.Model;
 using Microsoft.AspNetCore.Mvc;
 using Church.API.Models;
 using X.PagedList;
+using System.Net;
 
 namespace ChurchWebSiteNetCore.Controllers
 {
@@ -42,17 +43,30 @@ namespace ChurchWebSiteNetCore.Controllers
         {
             var apiContributors = new Church.API.Client.ApiCallerMember("http://localhost:448/");
 
-            var transactionList = apiContributors.GetContributors();
+            var transactionList = apiContributors.GetMembers();
 
             return transactionList;
-
         }
 
-
-        public IActionResult Details()
+        public IActionResult Details(int id)
         {
-            return View();
+            var member = this.GetMemberById(id);
+
+            return View(member);
         }
+
+        public IActionResult Delete(int id)
+        {
+            var result = this.DeleteMember(id, out string errorMsg);
+
+            if (!string.IsNullOrEmpty(errorMsg))
+            {
+                ViewBag.MemberErrorMsg = errorMsg;
+            }
+
+            return Json(new { Message = errorMsg });
+        }
+
 
         [HttpGet]
         public IActionResult Add()
@@ -86,6 +100,35 @@ namespace ChurchWebSiteNetCore.Controllers
             }
 
             return View("Add", contributor);
+        }
+
+        #region GetMemberFullNameList
+
+        protected Church.API.Models.Contributor GetMemberById(int id = 3333)
+        {
+            var apiMember = new Church.API.Client.ApiCallerMember("http://localhost:448/");
+
+            return apiMember.GetMemberById(id);
+        }
+
+        #endregion
+
+        protected Church.API.Models.Contributor DeleteMember(int id, out string errorMsg)
+        {
+            errorMsg = string.Empty;
+            Church.API.Models.Contributor member = null;
+
+            var apiMember = new Church.API.Client.ApiCallerMember("http://localhost:448/");
+            try
+            {
+                member = apiMember.DeleteMember(id);
+            }
+            catch(Exception ex)
+            {
+                errorMsg = ex.Message;
+            }
+
+            return member;
         }
     }
 }

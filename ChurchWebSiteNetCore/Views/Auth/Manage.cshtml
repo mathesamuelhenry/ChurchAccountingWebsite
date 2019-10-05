@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewData["Title"] = "Manage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Manage your account</h1>
+
+<p>Name: @User.Identity.Name</p>
+
+<p>Role: @User.FindFirst(claim => claim.Type == System.Security.Claims.ClaimTypes.Role)?.Value</p>
+

@@ -1,54 +1,78 @@
-﻿@model ChurchLibrary.Model.Transaction
+﻿@model Church.API.Models.Contribution
 
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var categoryList = ViewBag.CategoryList;
+    var transactionTypeList = ViewBag.TransactionTypeList;
+    var transactionModeList = ViewBag.TransactionModeList;
+    var accountList = ViewBag.AccountList;
+    var memberfullNameList = ViewBag.MemberFullNameList;
 }
 
 <nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a asp-controller="Transactions" asp-action="Index">Transactions</a></li>
-    <li class="breadcrumb-item active" aria-current="page"><a asp-controller="Transactions" asp-action="Details" asp-route-id="@Model.Id">Details</a></li>
-  </ol>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-controller="Transactions" asp-action="Index">Transactions</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a asp-controller="Transactions" asp-action="Details" asp-route-id="@Model.ContributionId">Details</a></li>
+    </ol>
 </nav>
 
 <h2>Transaction Details</h2>
+<div class="row">
+    <div class="col-8">
+        <table class="table table-borderless h4">
+            <tbody>
+                <tr>
+                    <td>Account Name</td>
+                    <td>@Model.Account.AccountName</td>
+                </tr>
+                @{
+                    string contributorName = string.Empty;
+                    if (@Model.Contributor == null)
+                    {
+                        contributorName = @Model.ContributionName;
+                    }
+                    else
+                    {
+                        contributorName = string.Concat(@Model.Contributor.FirstName, " ", @Model.Contributor.LastName);
+                    }
+                }
+                <tr>
+                    <td>Member/Type Name</td>
+                    <td>@contributorName</td>
+                </tr>
+                <tr>
+                    <td>Transaction Type</td>
+                    <td>@transactionTypeList[Model.TransactionType.ToString()]</td>
+                </tr>
+                <tr>
+                    <td>Transaction Mode</td>
+                    <td>@transactionModeList[Model.TransactionMode.ToString()]</td>
+                </tr>
+                <tr>
+                    <td>Tranaction Date</td>
+                    <td>@Model.TransactionDate</td>
+                </tr>
+                <tr>
+                    <td>Category</td>
+                    <td>@categoryList[Model.Category]</td>
+                </tr>
+                <tr>
+                    <td>Check #</td>
+                    <td>@Model.CheckNumber</td>
+                </tr>
+                <tr>
+                    <td>Amount</td>
+                    <td>@Model.Amount</td>
+                </tr>
+                <tr>
+                    <td>Note</td>
+                    <td>@Model.Note</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 
-<div class="row">
-    <div class="col-md-3">Account Name</div>
-    <div class="col-md-9">@Model.AccountName</div>
-</div>
-<div class="row">
-    <div class="col-md-3">Member/Type Name</div>
-    <div class="col-md-9">@Model.ContributorName</div>
-</div>
-<div class="row">
-    <div class="col-md-3">Transaction Type</div>
-    <div class="col-md-9">@Model.TransactionType</div>
-</div>
-<div class="row">
-    <div class="col-md-3">Transaction Mode</div>
-    <div class="col-md-9">@Model.TransactionMode</div>
-</div>
-<div class="row">
-    <div class="col-md-3">Tranaction Date</div>
-    <div class="col-md-9">@Model.TransactionDate</div>
-</div>
-<div class="row">
-    <div class="col-md-3">Category</div>
-    <div class="col-md-9">@Model.Category</div>
-</div>
-<div class="row">
-    <div class="col-md-3">Check #</div>
-    <div class="col-md-9">@Model.CheckNumber</div>
-</div>
-<div class="row">
-    <div class="col-md-3">Amount</div>
-    <div class="col-md-9">@Model.Amount</div>
-</div>
-<div class="row">
-    <div class="col-md-3">Note</div>
-    <div class="col-md-9">@Model.Note</div>
-</div>
 <br />
 <a class="btn-link text-primary" asp-controller="Transactions" asp-action="Index">Return to list</a>

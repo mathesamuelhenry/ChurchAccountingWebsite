@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Church.API.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChurchWebSiteNetCore.Controllers
@@ -10,15 +11,75 @@ namespace ChurchWebSiteNetCore.Controllers
     {
         public IActionResult Index()
         {
+            ViewBag.AccountList = this.GetAccountList();
+            ViewBag.TotalBalance = this.GetTotalBalance();
+
             return View();
         }
 
         public IActionResult Chart()
         {
-            ViewBag.Data = "Value,Value1,Value2,Value3"; //list of strings that you need to show on the chart. as mentioned in the example from c-sharpcorner
-            ViewBag.ObjectName = "Test,Test1,Test2,Test3";
+            Random rnd = new Random();
 
-            return View(ViewBag);
+            //list of countries  
+            var lstModel = new List<SimpleReportViewModel>();
+            lstModel.Add(new SimpleReportViewModel
+            {
+                DimensionOne = "Brazil",
+                Quantity = rnd.Next(10)
+            });
+            lstModel.Add(new SimpleReportViewModel
+            {
+                DimensionOne = "USA",
+                Quantity = rnd.Next(10)
+            });
+            lstModel.Add(new SimpleReportViewModel
+            {
+                DimensionOne = "Portugal",
+                Quantity = rnd.Next(10)
+            });
+            lstModel.Add(new SimpleReportViewModel
+            {
+                DimensionOne = "Russia",
+                Quantity = rnd.Next(10)
+            });
+            lstModel.Add(new SimpleReportViewModel
+            {
+                DimensionOne = "Ireland",
+                Quantity = rnd.Next(10)
+            });
+            lstModel.Add(new SimpleReportViewModel
+            {
+                DimensionOne = "Germany",
+                Quantity = rnd.Next(10)
+            });
+            return View(lstModel);
         }
+
+        #region Get List of accounts
+
+        protected List<Account> GetAccountList()
+        {
+            var apiAccount = new Church.API.Client.ApiCallerAccount("http://localhost:448/");
+
+            return apiAccount.GetAccounts();
+        }
+
+        protected decimal GetTotalBalance()
+        {
+            var apiAccount = new Church.API.Client.ApiCallerTransaction("http://localhost:448/");
+
+            var balanceList = apiAccount.GetAccountBalance();
+
+            return balanceList.Sum(x => x.Value);
+        }
+
+        #endregion
+    }
+
+    public class SimpleReportViewModel
+    {
+        public string DimensionOne { get; set; }
+        public int Quantity { get; set; }
     }
 }

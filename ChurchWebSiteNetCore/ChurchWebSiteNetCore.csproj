@@ -23,4 +23,9 @@
     <ProjectReference Include="..\..\Church.API.Models\Church.API.Models.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="Models\Auth\" />
+  </ItemGroup>
+
 </Project>

@@ -8,32 +8,30 @@ using ChurchWebSiteNetCore.Models;
 using ChurchLibrary.Model.Base.Response;
 using ChurchAccountingApiClient;
 using ChurchLibrary.Model;
+using ChurchWebSiteNetCore.Util;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ChurchWebSiteNetCore.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index(int? startAt, int? maxRecords, string sortBy, string sortOrder)
+        public override void OnActionExecuted(ActionExecutedContext context)
         {
-            //var apiContributors = new ApiCallerContributor("http://localhost:8080/");
+            base.OnActionExecuted(context);
+            ViewBag.Healthy = ApiCallUtil.IsApiHealthy();
+        }
 
-            //var contributorList = apiContributors.GetAllFullNames();
+        public IActionResult Index()
+        {
+            return View();
+        }
 
-            //apiContributors.UpdateContributor(new Contributor(21, "SAMUEL1", "MATHE", null, DateTime.Now, null)); 
-
-
-            SearchBaseResponse<List<ChurchLibrary.Model.Transaction>> transactionList = null;
-
-            if (!maxRecords.HasValue)
-            {
-                transactionList = this.GetData(1, 10, "cn.date_added", "desc");
-            }
-            else
-            {
-                transactionList = this.GetData(startAt, maxRecords, sortBy, sortOrder);
-            }
-
-            return View(transactionList);
+        [Route("userinfo")]
+        [Authorize]
+        public IActionResult UserInformation()
+        {
+            return View();
         }
 
         public SearchBaseResponse<List<Transaction>> GetData(int? startAt, int? maxRecords, string sortBy, string sortOrder)
@@ -61,5 +59,7 @@ namespace ChurchWebSiteNetCore.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
     }
 }

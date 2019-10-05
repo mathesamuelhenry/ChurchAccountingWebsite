@@ -1,8 +1,20 @@
-﻿@model ChurchLibrary.Model.Base.Response.SearchBaseResponse<List<ChurchLibrary.Model.Transaction>>
+﻿@model IPagedList<Church.API.Models.Contribution>
+
 @{
-    ViewData["Title"] = "Transactions";
+    ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    // var pagedList = (IPagedList)ViewBag.Transactions;
+    var pagedList = (IPagedList)Model;
+    var categoryList = ViewBag.CategoryList;
+    var transactionTypeList = ViewBag.TransactionTypeList;
+    var transactionModeList = ViewBag.TransactionModeList;
+    var accountList = ViewBag.AccountList;
+    var memberfullNameList = ViewBag.MemberFullNameList;
 }
+
+@using X.PagedList.Mvc.Core; @*import this so we get our HTML Helper*@
+@using X.PagedList; @*import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@using X.PagedList.Mvc.Common
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -10,104 +22,176 @@
     </ol>
 </nav>
 
+<h2>Search Transactions</h2>
+<hr />
 
-<div class="row border">
-    <div class="col-md-4">
-        1 Of 2
-    </div>
-    <div class="col-md-2 text-right align-middle">
-        @Model.totalcount total records
-    </div>
-    <div class="col-md-6">
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-end">
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                @for (int i = 0; i <= Model.totalcount; i++)
+<form class="form">
+    <div class="form-group row col-md-12">
+        <label for="inputAccountName" class="col-form-label col-md-1">Account Name</label>
+        <div class="col-md-3">
+            <select class="form-control">
+                @foreach (var account in accountList)
                 {
-                    if (i % 50 == 0)
-                    {
-                        <li class="page-item">@Html.ActionLink($"{(i / 50) + 1}", "Index", "Transactions", new { startAt = i + 1, maxRecords = 50, sortBy = "cn.date_added", sortOrder = "desc" }, new Dictionary<string, object> { { "class", "page-link" } })</li>
-                    }
+                    <option>@account</option>
                 }
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <table class="table table-striped table-responsive fixed-table-body">
-            <thead>
-                <tr>
-                    <th scope="col">Account Name</th>
-                    <th scope="col">Contributor Name</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Transaction Type</th>
-                    <th scope="col">Transaction Mode</th>
-                    <th scope="col">Check Number</th>
-                    <th scope="col">Transaction Date</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col" class="text-nowrap"></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.data)
+            </select>
+        </div>
+        <label for="inputTransType" class="col-form-label col-md-1">Transaction Type</label>
+        <div class="col-md-3">
+            <select class="form-control">
+                @foreach (var type in transactionTypeList)
                 {
+                    <option>@type.Value</option>
+                }
+            </select>
+        </div>
+        <label for="inputTransType" class="col-form-label col-md-1">Transaction Mode</label>
+        <div class="col-md-3">
+            <select class="form-control">
+                @foreach (var mode in transactionModeList)
+                {
+                    <option>@mode.Value</option>
+                }
+            </select>
+        </div>
+    </div>
+    <div class="form-group row col-md-12">
+        <label for="inputAccountName" class="col-form-label col-md-1">Member Name</label>
+        <div class="col-md-3">
+            <select class="form-control">
+                @foreach (var member in memberfullNameList)
+                {
+                    <option>@member</option>
+                }
+            </select>
+        </div>
+        <label for="inputCategory" class="col-form-label col-md-1">Category</label>
+        <div class="col-md-3">
+            <select class="form-control">
+                @foreach (var category in categoryList)
+                {
+                    <option>@category.Value</option>
+                }
+            </select>
+        </div>
+        <label for="inputFromDate" class="col-form-label col-md-1">From Date</label>
+        <div class="col-md-3">
+            <input class="form-control" type="date" value="2011-08-19" id="example-date-input">
+        </div>
+    </div>
+    <div class="form-group row col-md-12">
+        <label for="inputMemberNameText" class="col-form-label col-md-1"></label>
+        <div class="col-md-3">
+            <input class="form-control" type="text" placeholder="Default input">
+        </div>
+        <label class="sr-only col-form-label" for="inlineFormInputGroupUsername">CheckNumber</label>
+        <div class="input-group col-md-4">
+            <div class="input-group-prepend">
+                <div class="input-group-text">#</div>
+            </div>
+            <input type="text" class="form-control" id="inlineFormInputGroupUsername" placeholder="Check Number">
+        </div>
+        <label for="inputToDate" class="col-form-label col-md-1">To Date</label>
+        <div class="col-md-3">
+            <input class="form-control" type="date" value="2011-08-19" id="example-date-input">
+        </div>
+    </div>
+    <br />
+    <div class="div form-group row col-md-12">
+        <div class="col-md-10">
+        </div>
+        <div class="col-md-1">
+            <input class="btn btn-primary" type="submit" value="Search">
+        </div>
+        <div class="col-md-1">
+            <input class="btn btn-dark" type="reset" value="Reset">
+        </div>
+    </div>
+
+    <hr />
+    <div class="row form-group">
+        <div class="col-md-8">
+            @Html.PagedListPager(pagedList, page => Url.Action("Index", new { page = page, pageSize = 10 }))
+        </div>
+        <div class="col-md-1">
+            <select class="form-control">
+                <option>10</option>
+                <option>20</option>
+                <option>50</option>
+                <option>100</option>
+            </select>
+        </div>
+        <label for="perPageLabel" class="col-form-label col-md-1">per page</label>
+        <div class="col-md-2 col-form-label align-content-end">@Model.TotalItemCount total records</div>
+    </div>
+</form>
+
+@if (Model != null && Model.Count > 0)
+{
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-striped fixed-table-body">
+                <thead>
                     <tr>
-                        <td>@item.AccountName</td>
-                        <td>@item.ContributorName</td>
-                        <td>@item.Category</td>
-                        <td>@item.TransactionType</td>
-                        <td>@item.TransactionMode</td>
-                        <td>@item.CheckNumber</td>
-                        <td>@item.TransactionDate</td>
-                        <td>@item.Amount</td>
-                        <!-- <td><button type="button" class="btn btn-primary btn-sm">View</button>  <button type="button" class="btn btn-primary btn-sm" asp-controller="Member" asp-action="Details">Edit</button>  <button type="button" class="btn btn-primary btn-sm" asp-controller="Member" asp-action="Details">Delete</button></td>-->
-                        <td class="text-nowrap"><a class="btn btn-sm btn-primary" asp-controller="Transactions" asp-action="Details" asp-route-id="@item.Id">View</a>  
-                        <a class="btn btn-sm btn-primary" asp-controller="Member" asp-action="Details">Edit</a>  
-                        <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">Delete</button></td>
+                        <th scope="col">Account Name</th>
+                        <th scope="col">Contributor Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Transaction Type</th>
+                        <th scope="col">Transaction Mode</th>
+                        <th scope="col">Check #</th>
+                        <th scope="col">Transaction Date</th>
+                        <th scope="col">Amount</th>
+                        <!--<th scope="col">Date Added</th>
+                        <th scope="col">Date Changed</th>-->
+                        <th scope="col" class="text-nowrap"></th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col">
-        <nav aria-label="Page navigation">
-            <ul class="pagination justify-content-end">
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                @for (int i = 0; i <= Model.totalcount; i++)
-                {
-                    if (i % 50 == 0)
+                </thead>
+                <tbody>
+                    @foreach (var transaction in Model)
                     {
-                        <li class="page-item">@Html.ActionLink($"{(i / 50) + 1}", "Index", "Transactions", new { startAt = i + 1, maxRecords = 50, sortBy = "cn.date_added", sortOrder = "desc" }, new Dictionary<string, object> { { "class", "page-link" } })</li>
+                        <tr>
+                            <td>@transaction.Account.AccountName</td>
+                            @{
+                                string contributorName = string.Empty;
+                                if (transaction.Contributor == null)
+                                {
+                                    contributorName = transaction.ContributionName;
+                                }
+                                else
+                                {
+                                    contributorName = string.Concat(transaction.Contributor.FirstName, " ", transaction.Contributor.LastName);
+                                }
+                            }
+                            <td>@contributorName</td>
+                            <td>@categoryList[transaction.Category]</td>
+                            <td>
+                                @if (transactionTypeList[transaction.TransactionType.ToString()] == "Credit")
+                                {
+                                    <span class="badge badge-success">@transactionTypeList[transaction.TransactionType.ToString()]</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-warning">@transactionTypeList[transaction.TransactionType.ToString()]</span>
+                                }
+                            </td>
+                            <td>@transactionModeList[transaction.TransactionMode.ToString()]</td>
+                            <td>@transaction.CheckNumber</td>
+                            <td>@transaction.TransactionDate</td>
+                            <td>@transaction.Amount</td>
+                            <!--<td>@transaction.DateAdded</td>
+                            <td>@transaction.DateChanged</td>-->
+                            <td class="text-nowrap">
+                                <a class="btn btn-sm btn-primary" asp-controller="Transactions" asp-action="Details" asp-route-id="@transaction.ContributionId">View</a>
+                                <a class="btn btn-sm btn-primary" asp-controller="Member" asp-action="Details">Edit</a>
+                                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">Delete</button>
+                            </td>
+                        </tr>
                     }
-                }
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
-
+}
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -129,3 +213,8 @@
         </div>
     </div>
 </div>
+
+<!-- output a paging control that lets the user navigation to the previous page, next page, etc
+@Html.PagedListPager(pagedList, page => Url.Action("Index", new { page }))-->
+
+@Html.PagedListPager(pagedList, page => Url.Action("Index", new { page = page, pageSize = 10 }))

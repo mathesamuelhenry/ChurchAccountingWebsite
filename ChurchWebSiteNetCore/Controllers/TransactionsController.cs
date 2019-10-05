@@ -9,12 +9,20 @@ using Microsoft.AspNetCore.Mvc;
 using ChurchLibrary.Model;
 using X.PagedList;
 using Church.API.Models;
+using ChurchWebSiteNetCore.Util;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace ChurchWebSiteNetCore.Controllers
 {
     public class TransactionsController : Controller
     {
-        public IActionResult Index(int? startAt, int? maxRecords, string sortBy, string sortOrder)
+        public override void OnActionExecuted(ActionExecutedContext context)
+        {
+            base.OnActionExecuted(context);
+            ViewBag.Healthy = ApiCallUtil.IsApiHealthy();
+        }
+
+        public IActionResult IndexNew(int? startAt, int? maxRecords, string sortBy, string sortOrder)
         {
             SearchBaseResponse<List<ChurchLibrary.Model.Transaction>> transactionList = null;
 
@@ -47,6 +55,12 @@ namespace ChurchWebSiteNetCore.Controllers
 
         public IActionResult Details(int id)
         {
+            ViewBag.CategoryList = this.GetCVDList("contribution", "category");
+            ViewBag.TransactionTypeList = this.GetCVDList("contribution", "transaction_type");
+            ViewBag.TransactionModeList = this.GetCVDList("contribution", "transaction_mode");
+            ViewBag.AccountList = this.GetAccountList();
+            ViewBag.MemberFullNameList = this.GetMemberFullNameList();
+
             var apiTransaction = new Church.API.Client.ApiCallerTransaction("http://localhost:448/");
 
             var transaction = apiTransaction.GetTransaction(id);
@@ -56,13 +70,15 @@ namespace ChurchWebSiteNetCore.Controllers
 
         #region PagedData
 
-        public IActionResult IndexNew(int page = 1, int pageSize = 10)
+        public IActionResult Index(int page = 1, int pageSize = 10)
         {
             var transactions = GetPagedTransactionList(page, pageSize);
 
             ViewBag.CategoryList = this.GetCVDList("contribution", "category");
             ViewBag.TransactionTypeList = this.GetCVDList("contribution", "transaction_type");
             ViewBag.TransactionModeList = this.GetCVDList("contribution", "transaction_mode");
+            ViewBag.AccountList = this.GetAccountList();
+            ViewBag.MemberFullNameList = this.GetMemberFullNameList();
 
             return View(transactions);
         }
@@ -95,6 +111,7 @@ namespace ChurchWebSiteNetCore.Controllers
             return transactionList;
         }
 
+        #region GetCVDList
         protected Dictionary<string, string> GetCVDList(string table_name, string column_name)
         {
             var apiCVD = new Church.API.Client.ApiCallerCVD("http://localhost:448/");
@@ -105,6 +122,30 @@ namespace ChurchWebSiteNetCore.Controllers
 
             return cvdDictionaryList;
         }
+        #endregion
+
+        #region GetAccountList
+        protected List<string> GetAccountList()
+        {
+            var apiAccount = new Church.API.Client.ApiCallerAccount("http://localhost:448/");
+
+            var accountList = apiAccount.GetAccounts();
+
+            return accountList.Select(x => x.AccountName).ToList();
+        }
+
+        #endregion
+
+        #region GetMemberFullNameList
+
+        protected List<string> GetMemberFullNameList()
+        {
+            var apiMember = new Church.API.Client.ApiCallerMember("http://localhost:448/");
+
+            return apiMember.GetAllFullNames();
+        }
+
+        #endregion
 
         #endregion
     }
