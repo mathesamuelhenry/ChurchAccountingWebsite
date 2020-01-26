@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Church.API.Client;
 using Church.API.Models;
 using Church.API.Models.AppModel.Request;
+using Church.API.Models.AppModel.Request.User;
+using ChurchWebSiteNetCore.Models.Auth;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
@@ -31,7 +33,7 @@ namespace ChurchWebSiteNetCore.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterModel model)
         {
-            var userInfoObject = new Users()
+            var userInfoObject = new RegisterRequest()
             {
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -39,13 +41,7 @@ namespace ChurchWebSiteNetCore.Controllers
                 Password = model.Password,
                 Status = "A",
                 UserAdded = "msamuelhenry@gmail.com",
-                UserOrganization = new List<UserOrganization>
-                {
-                    new UserOrganization
-                    {
-                        OrganizationId = 3
-                    }
-                }
+                OrganizationIdList = new List<int> { 3 }
             };
 
             try
@@ -87,24 +83,33 @@ namespace ChurchWebSiteNetCore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(string name)
+        public async Task<IActionResult> Login(SignIn signInRequest)
         {
-            if (string.IsNullOrEmpty(name))
+            if (signInRequest != null)
             {
-                return RedirectToAction(nameof(SignIn));
+                try
+                {
+                    var apiAuth = new ApiCallerAuth("http://localhost:448/");
+                    var userResult = apiAuth.UserAuthenticate(signInRequest);
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+
+                var identity = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.Email, signInRequest.Email),
+                    new Claim(ClaimTypes.Role, "admin"),
+                }, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    principal);
             }
-
-            var identity = new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimTypes.Name, name),
-                new Claim(ClaimTypes.Role, "admin"),
-            }, CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var principal = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme, 
-                principal);
 
             return RedirectToAction(nameof(SignIn));
         }
