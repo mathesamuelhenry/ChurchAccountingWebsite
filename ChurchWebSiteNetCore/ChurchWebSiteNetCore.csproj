@@ -5,22 +5,27 @@
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="SSAuth.Client.csproj" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="7.6.0" />
   </ItemGroup>
 
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ChurchApiClient\ChurchAccountingApiClient\ChurchAccountingApiClient\ChurchAccountingApiClient.csproj" />
-    <ProjectReference Include="..\..\..\ChurchAPI\SamChurchAPI\ChurchLibrary\ChurchLibrary.csproj" />
     <ProjectReference Include="..\..\Church.API.Client\Church.API.Client.csproj" />
     <ProjectReference Include="..\..\Church.API.Models\Church.API.Models.csproj" />
+    <ProjectReference Include="..\..\Obsolete\ChurchApiClient\ChurchAccountingApiClient\ChurchAccountingApiClient\ChurchAccountingApiClient.csproj" />
+    <ProjectReference Include="..\..\Obsolete\ChurchAPI\SamChurchAPI\ChurchLibrary\ChurchLibrary.csproj" />
+    <ProjectReference Include="..\..\SSAuth\SSAuth\SSAuth.Client\SSAuth.Client.csproj" />
   </ItemGroup>
 
 </Project>

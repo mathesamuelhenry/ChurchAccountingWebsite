@@ -7,10 +7,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ChurchWebSiteNetCore</title>
+    <title>@ViewData["Title"]</title>
 
     <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-cerulean.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-united.css" />
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <!-- <link rel="stylesheet" href="~/css/Chart.css" />-->
     <link rel="stylesheet" href="~/css/PagedList.css" />
+    <link rel="icon" type="image/x-icon" href="logo__1__ExE_icon.ico">
 </head>
 
 @await FlushAsync()
@@ -32,8 +33,10 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-light">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ChurchWebSiteNetCore</a>
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <img src="logo__1__ExE_icon.ico" width="30" height="30" class="d-inline-block align-top" alt="">  SS Tech
+                </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -69,7 +72,7 @@
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container-fluid">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
             @if (isHealthy != null && !isHealthy)
@@ -84,7 +87,7 @@
 
 
     <footer class="border-top footer text-muted">
-        <div class="container">
+        <div class="container-fluid">
             &copy; 2019 - ChurchWebSiteNetCore - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>

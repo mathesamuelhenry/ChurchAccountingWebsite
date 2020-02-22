@@ -8,7 +8,7 @@
     <div asp-validation-summary="All" class="alert alert-danger"></div>
 }
 
-<form class="form" method="post" novalidate>
+<!--<form class="form" method="post" novalidate>
     <h2 class="form-heading">Please register</h2>
     <label for="inputName" class="sr-only">First Name</label>
     <input type="text" asp-for="FirstName" id="inputName" class="form-control first" placeholder="Name" required autofocus />
@@ -21,5 +21,58 @@
     <label for="inputRepeatPassword" class="sr-only">Repeat Password</label>
     <input type="password" asp-for="RepeatPassword" id="inputRepeatPassword" class="form-control last" placeholder="Repeat Password" required />
     <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
-</form>
+</form>-->
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-lg">
+        </div>
+        <div class="col-lg-6">
+            <div class="jumbotron">
+                <form class="form" method="post" novalidate>
+                    <div class="form-group row">
+                        <label for="inputFirstName" class="col-sm-3 col-form-label">First Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" asp-for="FirstName" class="form-control" placeholder="First name">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputLastName" class="col-sm-3 col-form-label">Last Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" asp-for="LastName" class="form-control" placeholder="Last name">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputEmail" class="col-sm-3 col-form-label">Email</label>
+                        <div class="col-sm-9">
+                            <input type="email" asp-for="Email" class="form-control" id="inputEmail" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-3 col-form-label">Password</label>
+                        <div class="col-sm-9">
+                            <input type="password" asp-for="Password" class="form-control" id="inputPassword" placeholder="Password">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="inputRepeatPassword" class="col-sm-3 col-form-label">Password</label>
+                        <div class="col-sm-9">
+                            <input type="password" asp-for="RepeatPassword" class="form-control" id="inputPassword" placeholder="Password">
+                        </div>
+                    </div>
+                    <br />
+                    <div class="form-group row">
+                        <div class="col-sm-12 text-center">
+                            <button type="submit" class="btn btn-primary btn-circle">Register</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg"> 
+        </div>
+    </div>
+</div>
+
+
 

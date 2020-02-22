@@ -17,6 +17,11 @@ namespace ChurchWebSiteNetCore.Controllers
             return View();
         }
 
+        public IActionResult Display()
+        {
+            return View();
+        }
+
         public IActionResult Chart()
         {
             Random rnd = new Random();

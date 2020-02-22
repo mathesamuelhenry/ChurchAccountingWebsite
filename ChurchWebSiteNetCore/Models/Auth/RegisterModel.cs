@@ -21,8 +21,11 @@ namespace ChurchWebSiteNetCore.Models.Auth
 
         [Compare("Password", ErrorMessage = "The repeat password did not seem correct")]
         public string RepeatPassword { get; set; }
+    }
 
-        [Required(ErrorMessage = "Have to select an Organization")]
-        public long OrganizationId { get; set; }
+    public class QuestionAnswer
+    {
+        public string QuestionId { get; set; }
+        public string Answer { get; set; }
     }
 }
