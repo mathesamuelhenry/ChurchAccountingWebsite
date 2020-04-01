@@ -1,11 +1,15 @@
 ﻿@model ChurchWebSiteNetCore.Models.Auth.RegisterModel
 @{
     ViewData["Title"] = "Sign Up";
+    var SecurityQuestionList = ViewBag.QuestionList;
+    var RegisterError = ViewBag.ErrorMessage;
 }
 
-@if (!ViewData.ModelState.IsValid)
+@if (!string.IsNullOrEmpty(RegisterError))
 {
-    <div asp-validation-summary="All" class="alert alert-danger"></div>
+    <div class="alert alert-danger" role="alert">
+        <strong>WARNING!</strong> Register Error : @RegisterError
+    </div>
 }
 
 <!--<form class="form" method="post" novalidate>
@@ -27,49 +31,95 @@
     <div class="row">
         <div class="col-lg">
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-7">
             <div class="jumbotron">
-                <form class="form" method="post" novalidate>
+                <h2>Register (Step 2)</h2>
+                <br />
+                <form class="form" method="post" asp-action="Register" novalidate>
                     <div class="form-group row">
-                        <label for="inputFirstName" class="col-sm-3 col-form-label">First Name</label>
+                        <label for="inputFirstName" class="col-sm-3 col-form-label">First Name*</label>
                         <div class="col-sm-9">
                             <input type="text" asp-for="FirstName" class="form-control" placeholder="First name">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="inputLastName" class="col-sm-3 col-form-label">Last Name</label>
+                        <label for="inputLastName" class="col-sm-3 col-form-label">Last Name*</label>
                         <div class="col-sm-9">
                             <input type="text" asp-for="LastName" class="form-control" placeholder="Last name">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="inputEmail" class="col-sm-3 col-form-label">Email</label>
+                        <label for="inputEmail" class="col-sm-3 col-form-label">Email*</label>
                         <div class="col-sm-9">
                             <input type="email" asp-for="Email" class="form-control" id="inputEmail" placeholder="Email">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="inputPassword" class="col-sm-3 col-form-label">Password</label>
+                        <label for="inputPassword" class="col-sm-3 col-form-label">Password*</label>
                         <div class="col-sm-9">
                             <input type="password" asp-for="Password" class="form-control" id="inputPassword" placeholder="Password">
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="inputRepeatPassword" class="col-sm-3 col-form-label">Password</label>
+                        <label for="inputRepeatPassword" class="col-sm-3 col-form-label">Confirm Password*</label>
                         <div class="col-sm-9">
                             <input type="password" asp-for="RepeatPassword" class="form-control" id="inputPassword" placeholder="Password">
                         </div>
                     </div>
                     <br />
+                    <hr />
+                    <h3>Security Questions</h3>
+                    <br />
+                    <div class="form-group row">
+                        <label for="Question1" class="col-sm-3 col-form-label">Question*</label>
+                        <div class="col-sm-9">
+                            <select asp-for="Question1" id="Question1" class="form-control custom-select" asp-items="@(new SelectList(SecurityQuestionList, "Id", "Name"))" required></select>
+                            <div class="invalid-feedback">Example invalid custom select feedback</div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="Answer1" class="col-sm-3 col-form-label">Answer*</label>
+                        <div class="col-sm-9">
+                            <input type="text" asp-for="Answer1" class="form-control" placeholder="Answer">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="Question2" class="col-sm-3 col-form-label">Question*</label>
+                        <div class="col-sm-9">
+                            <select asp-for="Question2" id="Question2" class="form-control" asp-items="@(new SelectList(SecurityQuestionList, "Id", "Name"));"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="Answer2" class="col-sm-3 col-form-label">Answer*</label>
+                        <div class="col-sm-9">
+                            <input type="text" asp-for="Answer2" class="form-control" placeholder="Answer">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="Question3" class="col-sm-3 col-form-label">Question*</label>
+                        <div class="col-sm-9">
+                            <select asp-for="Question3" id="Question3" class="form-control" asp-items="@(new SelectList(SecurityQuestionList, "Id", "Name"))"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="Answer3" class="col-sm-3 col-form-label">Answer*</label>
+                        <div class="col-sm-9">
+                            <input type="text" asp-for="Answer3" class="form-control" placeholder="Answer">
+                        </div>
+                    </div>
                     <div class="form-group row">
                         <div class="col-sm-12 text-center">
                             <button type="submit" class="btn btn-primary btn-circle">Register</button>
                         </div>
                     </div>
+                    <input type="hidden" asp-for="IndustryId" value="@Model.IndustryId" id="IndustryId" />
+                    <input type="hidden" asp-for="OrganizationName" value="@Model.OrganizationName" id="OrganizationName" />
+                    <input type="hidden" asp-for="OrgEmail" value="@Model.OrgEmail" id="OrgEmail" />
+                    <input type="hidden" asp-for="OrgPhone" value="@Model.OrgPhone" id="OrgPhone" />
                 </form>
             </div>
         </div>
-        <div class="col-lg"> 
+        <div class="col-lg">
         </div>
     </div>
 </div>

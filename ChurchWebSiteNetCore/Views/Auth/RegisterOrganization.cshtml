@@ -1,0 +1,76 @@
+﻿@model ChurchWebSiteNetCore.Models.Auth.RegisterModel
+@{
+    ViewData["Title"] = "RegisterOrganization";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var RegisterError = ViewBag.ErrorMessage;
+    var IndustryList = ViewBag.IndustryList;
+}
+
+@if (!string.IsNullOrEmpty(RegisterError))
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>WARNING!</strong> Register Error : @RegisterError
+    </div>
+}
+
+<!--<form class="form" method="post" novalidate>
+    <h2 class="form-heading">Please register</h2>
+    <label for="inputName" class="sr-only">First Name</label>
+    <input type="text" asp-for="FirstName" id="inputName" class="form-control first" placeholder="Name" required autofocus />
+    <label for="inputName" class="sr-only">Last Name</label>
+    <input type="text" asp-for="LastName" id="inputName" class="form-control first" placeholder="Name" required autofocus />
+    <label for="inputEmail" class="sr-only">Email address</label>
+    <input type="email" asp-for="Email" id="inputEmail" class="form-control" placeholder="Email address" required />
+    <label for="inputPassword" class="sr-only">Password</label>
+    <input type="password" asp-for="Password" id="inputPassword" class="form-control" placeholder="Password" required />
+    <label for="inputRepeatPassword" class="sr-only">Repeat Password</label>
+    <input type="password" asp-for="RepeatPassword" id="inputRepeatPassword" class="form-control last" placeholder="Repeat Password" required />
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+</form>-->
+<br />
+<div class="container">
+    <div class="row">
+        <div class="col-lg">
+        </div>
+        <div class="col-lg-7">
+            <div class="jumbotron">
+                <h2>Register (Step 1)</h2>
+                <br />
+                <form class="form" method="post" novalidate>
+                    <br />
+                    <div class="form-group row">
+                        <label for="OrganizationName" class="col-sm-3 col-form-label">Organization*</label>
+                        <div class="col-sm-9">
+                            <input type="text" asp-for="OrganizationName" class="form-control" placeholder="Organization Name">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="IndustryId" class="col-sm-3 col-form-label">Industry*</label>
+                        <div class="col-sm-9">
+                            <select asp-for="IndustryId" id="IndustryId" class="form-control" asp-items="@(new SelectList(IndustryList, "Id", "Name"))"></select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="OrgEmail" class="col-sm-3 col-form-label">Email</label>
+                        <div class="col-sm-9">
+                            <input type="text" asp-for="OrgEmail" class="form-control" placeholder="Email">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="OrgPhone" class="col-sm-3 col-form-label">Phone</label>
+                        <div class="col-sm-9">
+                            <input type="text" asp-for="OrgPhone" class="form-control" placeholder="Phone">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12 text-center">
+                            <button type="submit" class="btn btn-primary btn-circle">Register</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg">
+        </div>
+    </div>
+</div>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SSAuth.Client.ApiCall;
+using SSAuth.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,5 +19,11 @@ namespace ChurchWebSiteNetCore.Util
         }
 
         #endregion
+
+        public static List<SecurityQuestion> GetSecurityQuestions(string url)
+        {
+            var apiCallQuestion = new ApiCallerSecurityQuestions(url);
+            return apiCallQuestion.GetAllSecurityQuestions();
+        }
     }
 }

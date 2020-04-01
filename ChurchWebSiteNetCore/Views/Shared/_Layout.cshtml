@@ -33,7 +33,7 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3 bg-light">
-            <div class="container-fluid">
+            <div class="container">
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index">
                     <img src="logo__1__ExE_icon.ico" width="30" height="30" class="d-inline-block align-top" alt="">  SS Tech
                 </a>
@@ -44,7 +44,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Register">Register</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="RegisterOrganization">Register</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="SignIn">SignIn</a>
@@ -72,7 +72,7 @@
             </div>
         </nav>
     </header>
-    <div class="container-fluid">
+    <div class="container">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
             @if (isHealthy != null && !isHealthy)
@@ -87,7 +87,7 @@
 
 
     <footer class="border-top footer text-muted">
-        <div class="container-fluid">
+        <div class="container">
             &copy; 2019 - ChurchWebSiteNetCore - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>

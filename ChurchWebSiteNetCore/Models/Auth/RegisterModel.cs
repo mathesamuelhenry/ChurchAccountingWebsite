@@ -21,11 +21,39 @@ namespace ChurchWebSiteNetCore.Models.Auth
 
         [Compare("Password", ErrorMessage = "The repeat password did not seem correct")]
         public string RepeatPassword { get; set; }
+
+        [Required(ErrorMessage = "Have to supply Question 1")]
+        public int Question1 { get; set; }
+        [Required(ErrorMessage = "Have to supply Answer 1")]
+        public string Answer1 { get; set; }
+        [Required(ErrorMessage = "Have to supply Question 2")]
+        public int Question2 { get; set; }
+        [Required(ErrorMessage = "Have to supply Answer 2")]
+        public string Answer2 { get; set; }
+        [Required(ErrorMessage = "Have to supply Question 3")]
+        public int Question3 { get; set; }
+        [Required(ErrorMessage = "Have to supply Answer 3")]
+        public string Answer3 { get; set; }
+
+        [Required(ErrorMessage = "Have to supply Organization name")]
+        public string OrganizationName {get; set;}
+
+        [Required(ErrorMessage = "Have to supply Industry")]
+        public int IndustryId { get; set; }
+
+        public string OrgEmail { get; set; }
+        public string OrgPhone { get; set; }
     }
 
-    public class QuestionAnswer
+    public class IndustryModel
     {
-        public string QuestionId { get; set; }
-        public string Answer { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class QuestionsModel
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
     }
 }
