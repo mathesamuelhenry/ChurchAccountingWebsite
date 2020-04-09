@@ -11,9 +11,9 @@ namespace ChurchWebSiteNetCore.Util
     {
         #region Api Health
 
-        public static bool IsApiHealthy()
+        public static bool IsApiHealthy(string apiUrl)
         {
-            var apiHealthCheck = new Church.API.Client.ApiCallerHealthCheck("http://localhost:448/");
+            var apiHealthCheck = new Church.API.Client.ApiCallerHealthCheck(apiUrl);
 
             return apiHealthCheck.ApiHealthy();
         }

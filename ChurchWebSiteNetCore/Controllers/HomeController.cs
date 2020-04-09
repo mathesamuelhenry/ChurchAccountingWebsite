@@ -11,15 +11,24 @@ using ChurchLibrary.Model;
 using ChurchWebSiteNetCore.Util;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Options;
+using ChurchWebSiteNetCore.Models.Config;
 
 namespace ChurchWebSiteNetCore.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly APIUrl _apiUrl;
+
+        public HomeController(IOptions<APIUrl> apiUrlCfg)
+        {
+            _apiUrl = apiUrlCfg.Value;
+        }
+
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             base.OnActionExecuted(context);
-            ViewBag.Healthy = ApiCallUtil.IsApiHealthy();
+            ViewBag.Healthy = ApiCallUtil.IsApiHealthy(_apiUrl.SSChurch);
         }
 
         public IActionResult Index()

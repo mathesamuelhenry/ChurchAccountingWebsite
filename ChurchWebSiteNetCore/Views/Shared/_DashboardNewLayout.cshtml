@@ -49,7 +49,7 @@
             </div>
         </li>
     </ul>-->
-        <div class="btn-group px-3">
+        <!-- <div class="btn-group px-3">
         <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             My Account
         </button>
@@ -62,15 +62,28 @@
             </form>
         </div>
     </div>
+        -->
+        <ul class="nav">
+            <li class="nav-item dropdown no-arrow">
+                <a class="nav-link dropdown-toggle no-arrow" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">@User.Identity.Name</a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="#">Profile</a>
+                    <div class="dropdown-divider"></div>
+                    <form method="post" asp-action="Logout" asp-controller="Auth">
+                        <button type="submit" class="dropdown-item">Log Out</button>
+                    </form>
+                </div>
+            </li>
+        </ul>
         <!--<button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Right-aligned menu
-        </button>
-        <div class="dropdown-menu dropdown-menu-right">
-            <span class="dropdown-item-text">Dropdown item text</span>
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-        </div>-->
+        Right-aligned menu
+    </button>
+    <div class="dropdown-menu dropdown-menu-right">
+        <span class="dropdown-item-text">Dropdown item text</span>
+        <a class="dropdown-item" href="#">Action</a>
+        <a class="dropdown-item" href="#">Another action</a>
+        <a class="dropdown-item" href="#">Something else here</a>
+    </div>-->
     </nav>
 
     <div class="container-fluid">
@@ -85,10 +98,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <span data-feather="file"></span>
-                                Orders
-                            </a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Transactions" asp-action="Index">Transactions</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">
