@@ -39,13 +39,15 @@ namespace ChurchWebSiteNetCore
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "/auth/SignIn";
+                    // options.LoginPath = "/auth/SignIn";
+                    options.LoginPath = "/home/index";
                     options.AccessDeniedPath = "/auth/accessdenied";
                 });
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("MustBeAdmin", p => p.RequireAuthenticatedUser().RequireRole("admin"));
+                options.AddPolicy("MustBeAdmin", p => p.RequireAuthenticatedUser().RequireRole("Admin"));
+                options.AddPolicy("NotAdmin", p => p.RequireAuthenticatedUser().RequireRole("NotAdmin"));
             });
         }
 

@@ -11,15 +11,24 @@ using X.PagedList;
 using Church.API.Models;
 using ChurchWebSiteNetCore.Util;
 using Microsoft.AspNetCore.Mvc.Filters;
+using ChurchWebSiteNetCore.Models.Config;
+using Microsoft.Extensions.Options;
 
 namespace ChurchWebSiteNetCore.Controllers
 {
     public class TransactionsController : Controller
     {
+        private readonly APIUrl _apiUrl;
+
+        public TransactionsController(IOptions<APIUrl> apiUrlCfg)
+        {
+            _apiUrl = apiUrlCfg.Value;
+        }
+
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             base.OnActionExecuted(context);
-            ViewBag.Healthy = ApiCallUtil.IsApiHealthy();
+            ViewBag.Healthy = ApiCallUtil.IsApiHealthy(_apiUrl.SSChurch);
         }
 
         public IActionResult IndexNew(int? startAt, int? maxRecords, string sortBy, string sortOrder)

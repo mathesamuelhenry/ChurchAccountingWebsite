@@ -25,10 +25,9 @@ namespace ChurchWebSiteNetCore.Controllers
     public class AuthController : Controller
     {
         private readonly APIUrl _apiUrl;
-        private readonly IConfiguration _configuration;
-        public AuthController(IConfiguration configuration, IOptions<APIUrl> apiUrlCfg)
+
+        public AuthController(IOptions<APIUrl> apiUrlCfg)
         {
-            _configuration = configuration;
             _apiUrl = apiUrlCfg.Value;
         }
 
@@ -295,19 +294,18 @@ namespace ChurchWebSiteNetCore.Controllers
                     var apiAuth = new ApiCallerAuthUser(_apiUrl.SSAuth);
                     var userResult = apiAuth.AuthenticateUser(signInRequest);
                     var apiOrg = new ApiCallerUserOrganization(_apiUrl.SSChurch);
-
+                    
                     // TODO : Get Org ID and Name from Login Id/User ID
 
                     // Handle Claims
                     var identity = new ClaimsIdentity(new[]
                     {
-                        new Claim(ClaimTypes.Role, "admin"),
+                        new Claim(ClaimTypes.Role, "Admin"),
                         new Claim(ClaimTypes.NameIdentifier, userResult.LoginId),
                         new Claim(ClaimTypes.Name, string.Concat(userResult.FirstName, userResult.LastName)),
                         new Claim(ClaimTypes.Surname, userResult.LastName),
                         new Claim(ClaimTypes.GivenName, userResult.FirstName),
-                        new Claim(ClaimTypes.Email, userResult.EmailId),
-                        new Claim(ClaimTypes.Role, "Admin")
+                        new Claim(ClaimTypes.Email, userResult.EmailId)
                     }, CookieAuthenticationDefaults.AuthenticationScheme);
 
                     var principal = new ClaimsPrincipal(identity);

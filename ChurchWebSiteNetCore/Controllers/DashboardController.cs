@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Church.API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChurchWebSiteNetCore.Controllers
 {
     public class DashboardController : Controller
     {
+        [Authorize]
+        [Authorize(Policy = "MustBeAdmin")]
         public IActionResult Index()
         {
             ViewBag.AccountList = this.GetAccountList();
@@ -17,6 +20,8 @@ namespace ChurchWebSiteNetCore.Controllers
             return View();
         }
 
+        [Authorize]
+        [Authorize(Policy = "MustBeAdmin")]
         public IActionResult Display()
         {
             return View();
