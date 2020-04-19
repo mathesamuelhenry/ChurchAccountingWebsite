@@ -8,11 +8,21 @@ using Microsoft.AspNetCore.Mvc;
 using Church.API.Models;
 using X.PagedList;
 using System.Net;
+using ChurchWebSiteNetCore.Models;
+using Microsoft.Extensions.Options;
+using ChurchWebSiteNetCore.Models.Config;
 
 namespace ChurchWebSiteNetCore.Controllers
 {
     public class MemberController : Controller
     {
+        private readonly APIUrl _apiUrl;
+
+        public MemberController(IOptions<APIUrl> apiUrlCfg)
+        {
+            _apiUrl = apiUrlCfg.Value;
+        }
+
         public IActionResult Index(int page = 1, int pageSize = 10)
         {
             ViewBag.Members = GetPagedMemberList(page, pageSize);
@@ -67,11 +77,31 @@ namespace ChurchWebSiteNetCore.Controllers
             return Json(new { Message = errorMsg });
         }
 
-
         [HttpGet]
         public IActionResult Add()
         {
             return View();
+        }
+
+        public IActionResult Create()
+        {
+            var model = new Member { };
+
+            return PartialView("_AddMemberModalPartial", model);
+        }
+
+        [HttpPost]
+        public IActionResult Create(Member model)
+        {
+            if (ModelState.IsValid)
+            {
+                var memberObj = new Church.API.Models.Contributor() { OrganizationId = 2, FirstName = model.FirstName, LastName = model.LastName, FamilyName = model.FamilyName };
+
+                var apiContributors = new Church.API.Client.ApiCallerMember(_apiUrl.SSChurch);
+                apiContributors.PostAddMember(memberObj);
+            }
+
+            return PartialView("_AddMemberModalPartial", model);
         }
 
 
