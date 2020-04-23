@@ -12,6 +12,13 @@
             </div>
             <div class="modal-body">
                 <form asp-action="Create">
+                    <!-- TODO : _AddMemberModalPartial Implement better way of Error Handling -->
+                    @if (@ViewData.ModelState.IsValid.ToString() == "False")
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <strong>WARNING!</strong> @ViewBag.ErrorMessage
+                        </div>
+                    }
                     <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                     <div class="form-group">
                         <label asp-for="FirstName"></label>
