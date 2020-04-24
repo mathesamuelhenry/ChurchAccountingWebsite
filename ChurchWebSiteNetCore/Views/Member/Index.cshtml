@@ -15,6 +15,14 @@
 
 <h1>Members</h1>
 
+<!-- Modal placeholder -->
+<div id="modal-placeholder"></div>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-success float-lg-right" data-toggle="ajax-modal" data-target="#add-member" data-url="@Url.Action("Create")">
+    Add Member
+</button>
+
 @Html.PagedListPager(pagedList, page => Url.Action("Index", new { page = page, pageSize = 10 }))
 
 @if (ViewBag.Members != null && ViewBag.Members.Count > 0)
@@ -46,7 +54,7 @@
                             <td class="text-nowrap">
                                 <a class="btn btn-sm btn-primary" asp-controller="Member" asp-action="Details" asp-route-id="@name.ContributorId">View</a>
                                 <a class="btn btn-sm btn-primary" asp-controller="Member" asp-action="Details" asp-route-id="@name.ContributorId">Edit</a>
-                                <button type="button" id="delete-member-btn" data-id = "@name.ContributorId" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">Delete</button>
+                                <button type="button" id="delete-member-btn" data-id="@name.ContributorId" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">Delete</button>
                             </td>
                         </tr>
                     }
@@ -55,6 +63,10 @@
         </div>
     </div>
 }
+
+<!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+@Html.PagedListPager(pagedList, page => Url.Action("Index", new { page = page, pageSize = 10 }))
+
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -70,85 +82,90 @@
                 Are you sure you want to delete this transaction?
             </div>
             <div class="modal-footer">
-                <button type="button" id="btn-yes" class="btn btn-primary">Yes</button>
+                <!--<button type="button" id="btn-yes" class="btn btn-primary">Yes</button>-->
+                <button type="button" id="mySubmit" class="btn btn-primary">Yes</button>
+                <!--@Html.ActionLink("Yes", "Delete", "Member", new { @class = "btn btn-primary" })-->
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
             </div>
         </div>
     </div>
 </div>
 
-<p>Link 1</p>
-<a data-toggle="modal" data-id="ISBN564541" title="Add this item" class="open-AddBookDialog btn btn-primary" href="#addBookDialog">test</a>
-
-<p>&nbsp;</p>
-
-
-<p>Link 2</p>
-<a data-toggle="modal" data-id="ISBN-001122" title="Add this item" class="open-AddBookDialog btn btn-primary" href="#addBookDialog">test</a>
-
-<div class="modal hide" id="addBookDialog">
-    <div class="modal-header">
-        <button class="close" data-dismiss="modal">×</button>
-        <h3>Modal header</h3>
-    </div>
-    <div class="modal-body">
-        <p>some content</p>
-        <input type="text" name="bookId" id="bookId" value="" />
-    </div>
-</div>
-
-<!-- output a paging control that lets the user navigation to the previous page, next page, etc
-@Html.PagedListPager(pagedList, page => Url.Action("Index", new { page }))-->
-@Html.PagedListPager(pagedList, page => Url.Action("Index", new { page = page, pageSize = 10 }))
-
 @section scripts {
 
-<script type="text/javascript">
-    var delMemberId;
-
-    $(document).ready(function () {
+    <script type="text/javascript">
         var memberId;
-            $('#delete-member-btn').click(function () {
-                alert($('#delete-member-btn').val($(this).data('id')));
-                // Here's our button
-                var button = document.getElementById('delete-member-btn');
-                // Get the values
-                memberId = button.getAttribute('data-id');
-                alert(memberId);
-            });
+        // $('#error-alert').hide();
+        // $('#success-alert').hide();
+        alert("sdfsdf");
 
-            $('#btn-yes').click(function () {
-                // Here's our button
-                var button = document.getElementById('delete-member-btn');
-                $.ajax({  
-                type: "POST",  
-                url: '@Url.Action("createStudent")',  
-                data: '{std: ' + JSON.stringify(std) + '}',  
-                dataType: "json",  
-                contentType: "application/json; charset=utf-8",  
-                success: function () {  
-                   // alert("Data has been added successfully.");  
-                    LoadData();  
-                },  
-                error: function () {  
-                    alert("Error while inserting data");  
-                }  
-            });  
-                $.ajax({
-                    url: '/Member/Delete',
-                    data: { id: memberId },
-                    success: function () {  
-                       // alert("Data has been added successfully.");  
-                        LoadData();  
-                    },  
-                    error: function () {  
-                        alert("Error while inserting data");  
-                    }  
-                });
+        //Everytime we press delete in the table row
+        $('.delete').click(function(e) {
+            e.preventDefault();
+
+            //Update the item to delete id so our model knows which one to delete
+            var id = $(this).data('id');
+            alert(id);
+            $('#item-to-delete').val(id);
+        });
+
+
+        //Everytime we press sumbit on the modal form...
+        $('#mySubmit').click(function() {
+
+            //Get the id to delete from the hidden field
+            var member = $('#item-to-delete').val();
+            alert(member);
+
+            var url = "/Member/Delete";
+            $.post(@Url.Action("Delete", "Member"), { id = member }, function (data) {
+                alert(data.message);
+            }, 'json');
+
+        });
+
+        // all buttons with data-toggle equal to ajax-modal
+        $('button[data-toggle="modal"]').click(function (event) {
+            memberId = $(this).attr("data-id");
+        });
+
+        $('#btn-yes').click(function (event) {
+            $.ajax({
+                url: '/Member/Delete/',
+                data: JSON.stringify(memberId),
+                contentType: 'application/json',
+                type: 'POST',
+                success: function (data) {
+                    $('#exampleModal').modal('hide');
+                    if (!data.success)
+                    {
+                        $('#error-alert').show();
+                        $('#error-message').html(data.message);
+                        $("#error-alert").fadeTo(5000, 500).slideUp(500, function () {
+                            $("#error-alert").slideUp(500);
+                        });
+                    }
+                    else
+                    {
+                        $('#success-alert').show();
+                        $('#success-message').html("Member successfully deleted.");
+                        $("#success-alert").fadeTo(5000, 500).slideUp(500, function () {
+                            $("#success-alert").slideUp(500);
+                        });
+                    }
+                },
+                error: function (request, status, error) {
+                    $('#exampleModal').modal('hide');
+                    $('#error-message').html("Unknown Error. Please contact System administrator for more details.");
+                    $('#error-alert').show();
+                    $("#error-alert").fadeTo(5000, 500).slideUp(500, function() {
+                      $("#error-alert").slideUp(500);
+                    });
+                }
             });
         });
 
-</script>
+    </script>
 
 }
 
