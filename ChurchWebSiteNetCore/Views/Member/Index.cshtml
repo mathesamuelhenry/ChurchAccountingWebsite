@@ -53,7 +53,7 @@
                             <td>@name.DateChanged</td>
                             <td class="text-nowrap">
                                 <a class="btn btn-sm btn-primary" asp-controller="Member" asp-action="Details" asp-route-id="@name.ContributorId">View</a>
-                                <a class="btn btn-sm btn-primary" asp-controller="Member" asp-action="Details" asp-route-id="@name.ContributorId">Edit</a>
+                                <button type="button" class="btn btn-sm btn-primary" data-toggle="ajax-modal" data-url="@Url.Action("Edit", new { id = @name.ContributorId })">Edit</button>
                                 <button type="button" id="delete-member-btn" data-id="@name.ContributorId" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">Delete</button>
                             </td>
                         </tr>
@@ -83,7 +83,7 @@
             </div>
             <div class="modal-footer">
                 <!--<button type="button" id="btn-yes" class="btn btn-primary">Yes</button>-->
-                <button type="button" id="mySubmit" class="btn btn-primary">Yes</button>
+                <button type="button" id="mySubmit" class="btn btn-primary delete">Yes</button>
                 <!--@Html.ActionLink("Yes", "Delete", "Member", new { @class = "btn btn-primary" })-->
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
             </div>
@@ -99,26 +99,16 @@
         // $('#success-alert').hide();
         alert("sdfsdf");
 
-        //Everytime we press delete in the table row
-        $('.delete').click(function(e) {
-            e.preventDefault();
-
-            //Update the item to delete id so our model knows which one to delete
-            var id = $(this).data('id');
-            alert(id);
-            $('#item-to-delete').val(id);
-        });
-
-
+        
         //Everytime we press sumbit on the modal form...
         $('#mySubmit').click(function() {
 
             //Get the id to delete from the hidden field
-            var member = $('#item-to-delete').val();
-            alert(member);
+            // var member = $('#item-to-delete').val();
+            alert(memberId);
 
             var url = "/Member/Delete";
-            $.post(@Url.Action("Delete", "Member"), { id = member }, function (data) {
+            $.post(@Url.Action("Delete", "Member"), { id = memberId }, function (data) {
                 alert(data.message);
             }, 'json');
 
@@ -129,7 +119,7 @@
             memberId = $(this).attr("data-id");
         });
 
-        $('#btn-yes').click(function (event) {
+        /*$('#btn-yes').click(function (event) {
             $.ajax({
                 url: '/Member/Delete/',
                 data: JSON.stringify(memberId),
@@ -163,7 +153,7 @@
                     });
                 }
             });
-        });
+        });*/
 
     </script>
 

@@ -42,4 +42,16 @@ $(function () {
             }
         });
     });
+
+
+    $('a[data-toggle="ajax-modal"]').click(function (event) {
+        // Get Url
+        var url = $(this).data('url');
+
+        // Get request to pull the modal and place it in the place holder
+        $.get(url).done(function (data) {
+            placeholderElement.html(data);
+            placeholderElement.find('.modal').modal('show');
+        })
+    });
 });
