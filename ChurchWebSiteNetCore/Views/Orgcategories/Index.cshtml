@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var pagedList = (IPagedList)ViewBag.OrgCategoryList;
+}
+
+@using X.PagedList.Mvc.Core; @*import this so we get our HTML Helper*@
+@using X.PagedList; @*import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@using X.PagedList.Mvc.Common
+
+<!-- import the included stylesheet for some (very basic) default styling
+<link href="/css/PagedList.css" rel="stylesheet" type="text/css" />-->
+
+<h1>Org Category</h1>
+
+<!-- Modal placeholder -->
+<div id="modal-placeholder"></div>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-success float-lg-right" data-toggle="ajax-modal" data-target="#add-org-category" data-url="@Url.Action("Create")">
+    Add Org Category
+</button>
+
+@Html.PagedListPager(pagedList, page => Url.Action("Index", new { page = page, pageSize = 10 }))
+
+@if (ViewBag.OrgCategoryList != null && ViewBag.OrgCategoryList.Count > 0)
+{
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-striped fixed-table-body">
+                <thead>
+                    <tr>
+                        <th scope="col">Organization Category Id</th>
+                        <th scope="col">Category Name</th>
+                        <th scope="col" class="text-nowrap"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var name in ViewBag.OrgCategoryList)
+                    {
+                        <tr>
+                            <td>@name.OrganizationCategoryId</td>
+                            <td>@name.CategoryName</td>
+                            <td class="text-nowrap">
+                                <button type="button" class="btn btn-sm btn-primary" data-toggle="ajax-modal" data-url="@Url.Action("Edit", new { id = @name.OrganizationCategoryId})">Edit</button>
+                                <button type="button" id="delete-org-category-btn" data-id="@name.OrganizationCategoryId" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+@Html.PagedListPager(pagedList, page => Url.Action("Index", new { page = page, pageSize = 10 }))
+
+

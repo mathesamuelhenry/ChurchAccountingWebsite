@@ -110,6 +110,7 @@ namespace ChurchWebSiteNetCore.Controllers
 
             if (ModelState.IsValid)
             {
+                // TODO : Get Org Id from Claims
                 var memberObj = new Church.API.Models.Contributor() { OrganizationId = 2, FirstName = model.FirstName, LastName = model.LastName, FamilyName = model.FamilyName };
 
                 var apiContributors = new Church.API.Client.ApiCallerMember(_apiUrl.SSChurch);
@@ -137,6 +138,7 @@ namespace ChurchWebSiteNetCore.Controllers
 
             if (ModelState.IsValid)
             {
+                // TODO : Get Org Id from Claims
                 var memberObj = new Church.API.Models.Contributor() { OrganizationId = 2, ContributorId = model.Id, FirstName = model.FirstName, LastName = model.LastName, FamilyName = model.FamilyName };
 
                 var apiContributors = new Church.API.Client.ApiCallerMember(_apiUrl.SSChurch);
