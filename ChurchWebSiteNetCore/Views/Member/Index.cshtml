@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var pagedList = (IPagedList)ViewBag.Members;
+    var placeholderAlert = "";
 }
 
 @using X.PagedList.Mvc.Core; @*import this so we get our HTML Helper*@
@@ -17,6 +18,11 @@
 
 <!-- Modal placeholder -->
 <div id="modal-placeholder"></div>
+
+@if (!string.IsNullOrEmpty(placeholderAlert))
+{
+    <div class="alert alert-warning" role="alert" id="error-alert"></div>
+}
 
 <!-- Button trigger modal -->
 <button type="button" class="btn btn-success float-lg-right" data-toggle="ajax-modal" data-target="#add-member" data-url="@Url.Action("Create")">
@@ -98,7 +104,7 @@
         // $('#error-alert').hide();
         // $('#success-alert').hide();
         alert("sdfsdf");
-
+        $('error-alert').hide();
         
         //Everytime we press sumbit on the modal form...
         $('#mySubmit').click(function() {
@@ -107,11 +113,16 @@
             // var member = $('#item-to-delete').val();
             alert(memberId);
 
-            var url = "/Member/Delete";
-            $.post(@Url.Action("Delete", "Member"), { id = memberId }, function (data) {
-                alert(data.message);
-            }, 'json');
-
+            var url = "/Member/Delete/" + memberId;
+                $.ajax({
+                    url: url,
+                    type: 'Post',
+                }).done(function () {
+                    $(this).find('.modal').modal('hide');
+                    window.location.reload();
+                }).error(function () {
+                alert("Failed");
+            });
         });
 
         // all buttons with data-toggle equal to ajax-modal

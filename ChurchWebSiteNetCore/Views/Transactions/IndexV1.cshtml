@@ -1,21 +1,23 @@
-﻿@model IPagedList<Church.API.Models.AppModel.Response.Transactions.SearchTransactionsResponse>
+﻿@model Church.API.Models.AppModel.Response.GenericSearchResponse<List<Church.API.Models.AppModel.Response.Transactions.SearchTransactionsResponse>>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "IndexV1";
     Layout = "~/Views/Shared/_Layout.cshtml";
     // var pagedList = (IPagedList)ViewBag.Transactions;
-    var pagedList = (IPagedList)Model;
+    // var pagedList = (IPagedList)Model;
     var categoryList = ViewBag.CategoryList;
     var transactionTypeList = ViewBag.TransactionTypeList;
     var transactionModeList = ViewBag.TransactionModeList;
     var accountList = ViewBag.AccountList;
     var memberfullNameList = ViewBag.MemberFullNameList;
     var pageSize = ViewBag.PageSize;
+    var pageSizeList = ViewBag.PageSizeList;
+    var pageNumber = ViewBag.PageNumber;
 }
 
-@using X.PagedList.Mvc.Core; @*import this so we get our HTML Helper*@
+<!--@using X.PagedList.Mvc.Core; @*import this so we get our HTML Helper*@
 @using X.PagedList; @*import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
-@using X.PagedList.Mvc.Common
+@using X.PagedList.Mvc.Common-->
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -88,7 +90,7 @@
     <div class="form-group row col-md-12">
         <label for="inputMemberNameText" class="col-form-label col-md-1">Name</label>
         <div class="col-md-3">
-            <input class="form-control" type="text" placeholder="Transaction Name" name = "TransactionName">
+            <input class="form-control" type="text" placeholder="Transaction Name" name="TransactionName">
         </div>
         <label class="sr-only col-form-label" for="inlineFormInputGroupUsername">CheckNumber</label>
         <div class="input-group col-md-4">
@@ -113,26 +115,50 @@
             <input class="btn btn-dark" type="reset" value="Reset">
         </div>
     </div>
-
     <hr />
     <div class="row form-group">
         <div class="col-md-8">
-            @Html.PagedListPager(pagedList, page => Url.Action("Index", new { page = page, pageSize = pageSize }))
+
+            @{
+                int pageCount = Model.TotalRecordCount / pageSize;
+            }
+            @*Html.PagedListPager(pagedList, page => Url.Action("Index", new { page = page, pageSize = pageSize })) *@
+            <nav aria-label="...">
+                <ul class="pagination">
+                    @{
+                        for (int i = 1; i < pageCount; i++)
+                        {
+                            if (i < pageNumber)
+                            {
+
+                            }
+                            else
+                            {
+                                <li><a href="#" class="sourcelink" data-info="@i">@i</a></li>
+                            }
+                        }
+                    }
+                </ul>
+            </nav>
+
         </div>
+
+        @Html.Hidden("PageNumber", pageNumber, new { @class = "form-control", @id = "PageNumber" })
         <div class="col-md-1">
-            <select class="form-control" name="PageSize">
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-            </select>
+            @Html.DropDownList("PageSize", (SelectList)pageSizeList, new { @class = "form-control", @id = "Page" })
+            <!--<select class="form-control" name="PageSize" id="Page">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>-->
         </div>
         <label for="perPageLabel" class="col-form-label col-md-1">per page</label>
-        <div class="col-md-2 col-form-label align-content-end">@Model.TotalItemCount total records</div>
+        <div class="col-md-2 col-form-label align-content-end">@Model.TotalRecordCount total records</div>
     </div>
 </form>
 
-@if (Model != null && Model.Count > 0)
+@if (Model != null && Model.Response.Count > 0)
 {
     <div class="row">
         <div class="col-12">
@@ -153,7 +179,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var transaction in Model)
+                    @foreach (var transaction in Model.Response)
                     {
                         <tr>
                             <td>@transaction.AccountName</td>
@@ -208,7 +234,37 @@
     </div>
 </div>
 
-<!-- output a paging control that lets the user navigation to the previous page, next page, etc
-@Html.PagedListPager(pagedList, page => Url.Action("Index", new { page }))-->
+<!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+@*Html.PagedListPager(pagedList, page => Url.Action("Index", new { page }))*@
 
-@Html.PagedListPager(pagedList, page => Url.Action("Index", new { page = page, pageSize = 10 }))
+    @section scripts {
+
+    <script type="text/javascript">
+        var memberId;
+        var pageNumber;
+        // $('#error-alert').hide();
+        // $('#success-alert').hide();
+        // alert("sdfsdf");
+
+        $('#PageNumber').val(1);
+
+        $("#Page").change(function () {
+            $('#PageNumber').val(1);
+            this.form.submit();
+        });
+
+        
+        $('.sourcelink').click(function () {
+
+            pageNumber = $(this).data('info');
+
+            $('#PageNumber').val(pageNumber);
+
+            var joForm = $('form').eq(0);
+            joForm.submit();
+        });
+
+    </script>
+
+}
+

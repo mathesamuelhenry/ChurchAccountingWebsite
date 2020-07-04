@@ -13,9 +13,21 @@ using ChurchWebSiteNetCore.Util;
 using Microsoft.AspNetCore.Mvc.Filters;
 using ChurchWebSiteNetCore.Models.Config;
 using Microsoft.Extensions.Options;
+using Church.API.Models.AppModel.Request.Transactions;
+using Church.API.Models.AppModel.Response.Transactions;
+using Church.API.Models.AppModel.Request;
+using Microsoft.AspNetCore.Http;
+using Church.API.Models.AppModel.Response;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ChurchWebSiteNetCore.Controllers
 {
+    public class Person
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    };
+
     public class TransactionsController : Controller
     {
         private readonly APIUrl _apiUrl;
@@ -79,7 +91,7 @@ namespace ChurchWebSiteNetCore.Controllers
 
         #region PagedData
 
-        public IActionResult Index(int page = 1, int pageSize = 10)
+        /*public IActionResult Index(int page = 1, int pageSize = 10)
         {
             var transactions = GetPagedTransactionList(page, pageSize);
 
@@ -109,11 +121,190 @@ namespace ChurchWebSiteNetCore.Controllers
                 return null;
 
             return listPaged;
+        }*/
+
+        public IActionResult IndexV1(int page = 1, int pageSize = 10)
+        {
+            var request = new SearchTransactionsRequest()
+            {
+                SearchParameters = new SearchParameters()
+                {
+                    MaxRecords = pageSize,
+                    StartAt = page == 1 ? 0 : (page - 1) * pageSize,
+                    SortOrder = "desc",
+                    OrderBy = "cn.date_added"
+                }
+            };
+
+            var transactions = GetPagedSearchTransactionListV1(page, pageSize, request);
+
+            ViewBag.CategoryList = this.GetCVDList("contribution", "category");
+            ViewBag.TransactionTypeList = this.GetCVDList("contribution", "transaction_type");
+            ViewBag.TransactionModeList = this.GetCVDList("contribution", "transaction_mode");
+            ViewBag.AccountList = this.GetAccountList();
+            ViewBag.MemberFullNameList = this.GetMemberFullNameList();
+            ViewBag.PageSize = pageSize;
+
+            Person[] list = new[] {
+                        new Person { Id = 10, Name = "10" },
+                        new Person { Id = 25, Name = "25" },
+                        new Person { Id = 50, Name = "50" },
+                        new Person { Id = 100, Name = "100" }
+                    };
+
+            SelectList selectList = new SelectList(list, "Id", "Name", pageSize);
+            ViewBag.PageSizeList = selectList;
+
+            return View(transactions);
+        }
+
+        public IActionResult Index(int page = 1, int pageSize = 10)
+        {
+            var request = new SearchTransactionsRequest()
+            {
+                SearchParameters = new SearchParameters()
+                {
+                    MaxRecords = int.MaxValue,
+                    StartAt = page == 1 ? 0 : (page - 1) * pageSize,
+                    SortOrder = "desc",
+                    OrderBy = "cn.date_added"
+                }
+            };
+
+            var transactions = GetPagedSearchTransactionList(page, pageSize, request);
+
+            ViewBag.CategoryList = this.GetCVDList("contribution", "category");
+            ViewBag.TransactionTypeList = this.GetCVDList("contribution", "transaction_type");
+            ViewBag.TransactionModeList = this.GetCVDList("contribution", "transaction_mode");
+            ViewBag.AccountList = this.GetAccountList();
+            ViewBag.MemberFullNameList = this.GetMemberFullNameList();
+            ViewBag.PageSize = pageSize;
+
+            return View(transactions);
+        }
+
+        protected IPagedList<Contribution> GetPagedTransactionList(int? page, int pageSize)
+        {
+            // return a 404 if user browses to before the first page
+            if (page.HasValue && page < 1)
+                return null;
+
+            // retrieve list from database/whereverand
+            var listUnpaged = GetTransactionsFromTheDatabase();
+
+            // page the list
+            var listPaged = listUnpaged.ToPagedList(page ?? 1, pageSize);
+
+            // return a 404 if user browses to pages beyond last page. special case first page if no items exist
+            if (listPaged.PageNumber != 1 && page.HasValue && page > listPaged.PageCount)
+                return null;
+
+            return listPaged;
+        }
+
+        [HttpPost]
+        public IActionResult SearchTransaction(IFormCollection form)
+        {
+            var pageNumber = int.Parse(form["pageNumber"]);
+            var pageSize = int.Parse(form["pageSize"]);
+
+            var request = new SearchTransactionsRequest()
+            {
+                FromDate = string.IsNullOrEmpty(form["FromDate"]) ? (DateTime?)null : Convert.ToDateTime(form["FromDate"]),
+                ToDate = string.IsNullOrEmpty(form["ToDate"]) ? (DateTime?)null : Convert.ToDateTime(form["ToDate"]),
+                AccountId = int.TryParse(form["AccountId"], out _) ? int.Parse(form["AccountId"]) : (int?)null,
+                TransactionType = int.TryParse(form["TransType"], out _) ? int.Parse(form["TransType"]) : (int?)null,
+                TransactionMode = int.TryParse(form["TransMode"], out _) ? int.Parse(form["TransMode"]) : (int?)null,
+                Category = int.TryParse(form["Category"], out _) ? int.Parse(form["Category"]) : (int?)null,
+                MemberPayeeId = int.TryParse(form["MemberName"], out int memPayeeId) ? int.Parse(form["MemberName"]) : (int?)null,
+                CheckNumber = form["CheckNumber"],
+                TransactionName = form["TransactionName"],
+                SearchParameters = new SearchParameters()
+                {
+                    MaxRecords = int.Parse(form["PageSize"]),
+                    StartAt = pageSize * (pageNumber - 1),
+                    SortOrder = "desc",
+                    OrderBy = "cn.date_added"
+                }
+            };
+
+            var transactions = GetPagedSearchTransactionListV1(1, int.Parse(form["PageSize"]), request);
+
+            ViewBag.CategoryList = this.GetCVDList("contribution", "category");
+            ViewBag.TransactionTypeList = this.GetCVDList("contribution", "transaction_type");
+            ViewBag.TransactionModeList = this.GetCVDList("contribution", "transaction_mode");
+            ViewBag.AccountList = this.GetAccountList();
+            ViewBag.MemberFullNameList = this.GetMemberFullNameList();
+            ViewBag.PageSize = int.Parse(form["PageSize"]);
+            ViewBag.PageNumber = int.Parse(form["PageNumber"]);
+
+            
+
+            Person[] list = new[] {
+                        new Person { Id = 10, Name = "10" },
+                        new Person { Id = 25, Name = "25" },
+                        new Person { Id = 50, Name = "50" },
+                        new Person { Id = 100, Name = "100" }
+                    };
+
+            SelectList selectList = new SelectList(list, "Id", "Name", int.Parse(form["PageSize"]));
+            ViewBag.PageSizeList = selectList;
+
+            return View("IndexV1", transactions);
+        }
+
+        protected GenericSearchResponse<List<SearchTransactionsResponse>> GetPagedSearchTransactionListV1(int? page, int pageSize, SearchTransactionsRequest request)
+        {
+            // return a 404 if user browses to before the first page
+            if (page.HasValue && page < 1)
+                return null;
+
+            // retrieve list from database/whereverand
+            var transactionList = SearchTransactionsFromTheDatabaseV1(request);
+
+            return transactionList;
+        }
+
+        protected IPagedList<SearchTransactionsResponse> GetPagedSearchTransactionList(int? page, int pageSize, SearchTransactionsRequest request)
+        {
+            // return a 404 if user browses to before the first page
+            if (page.HasValue && page < 1)
+                return null;
+
+            // retrieve list from database/whereverand
+            var listUnpaged = SearchTransactionsFromTheDatabase(request);
+
+            // page the list
+            var listPaged = listUnpaged.ToPagedList(page ?? 1, pageSize);
+
+            // return a 404 if user browses to pages beyond last page. special case first page if no items exist
+            if (listPaged.PageNumber != 1 && page.HasValue && page > listPaged.PageCount)
+                return null;
+
+            return listPaged;
+        }
+
+        protected GenericSearchResponse<List<SearchTransactionsResponse>> SearchTransactionsFromTheDatabaseV1(SearchTransactionsRequest searchTransactionsRequest)
+        {
+            var apiTransaction = new Church.API.Client.ApiCallerTransaction(_apiUrl.SSChurch);
+
+            var transactionList = apiTransaction.SearchTransactions(searchTransactionsRequest);
+
+            return transactionList;
+        }
+
+        protected List<SearchTransactionsResponse> SearchTransactionsFromTheDatabase(SearchTransactionsRequest searchTransactionsRequest)
+        {
+            var apiTransaction = new Church.API.Client.ApiCallerTransaction(_apiUrl.SSChurch);
+
+            var transactionList = apiTransaction.SearchTransactions(searchTransactionsRequest);
+
+            return new List<SearchTransactionsResponse>();
         }
 
         protected List<Church.API.Models.Contribution> GetTransactionsFromTheDatabase()
         {
-            var apiTransaction = new Church.API.Client.ApiCallerTransaction("http://localhost:448/");
+            var apiTransaction = new Church.API.Client.ApiCallerTransaction(_apiUrl.SSChurch);
 
             var transactionList = apiTransaction.GetTransactions();
 
@@ -134,7 +325,7 @@ namespace ChurchWebSiteNetCore.Controllers
         #endregion
 
         #region GetAccountList
-        protected List<string> GetAccountList()
+        protected List<string> GetAccountList1()
         {
             var apiAccount = new Church.API.Client.ApiCallerAccount("http://localhost:448/");
 
@@ -143,19 +334,40 @@ namespace ChurchWebSiteNetCore.Controllers
             return accountList.Select(x => x.AccountName).ToList();
         }
 
+        protected Dictionary<int, string> GetAccountList()
+        {
+            var apiAccount = new Church.API.Client.ApiCallerAccount("http://localhost:448/");
+
+            var accountList = apiAccount.GetAccounts();
+
+            var dict = accountList.ToDictionary(x => x.AccountId, x => x.AccountName);
+
+            return dict;
+        }
+
         #endregion
 
         #region GetMemberFullNameList
 
-        protected List<string> GetMemberFullNameList()
+        protected Dictionary<int, string> GetMemberFullNameList()
         {
             var apiMember = new Church.API.Client.ApiCallerMember("http://localhost:448/");
 
-            return apiMember.GetAllFullNames();
+            var memberList = apiMember.GetByOrganizationId(2);
+
+            return memberList.ToDictionary(x => x.ContributorId, x => string.Concat(x.LastName, ", ", x.FirstName));
         }
 
         #endregion
 
         #endregion
+
+        [HttpPost]
+        public IActionResult Test(IFormCollection form)
+        {
+            string name = form["Name"];
+            string country = form["Country"];
+            return View();
+        }
     }
 }
