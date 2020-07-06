@@ -28,6 +28,12 @@ namespace ChurchWebSiteNetCore.Controllers
         public string Name { get; set; }
     };
 
+    public class Item
+    {
+        public int? Id { get; set; }
+        public string Name { get; set; }
+    };
+
     public class TransactionsController : Controller
     {
         private readonly APIUrl _apiUrl;
@@ -138,21 +144,37 @@ namespace ChurchWebSiteNetCore.Controllers
 
             var transactions = GetPagedSearchTransactionListV1(page, pageSize, request);
 
-            ViewBag.CategoryList = this.GetCVDList("contribution", "category");
-            ViewBag.TransactionTypeList = this.GetCVDList("contribution", "transaction_type");
-            ViewBag.TransactionModeList = this.GetCVDList("contribution", "transaction_mode");
-            ViewBag.AccountList = this.GetAccountList();
-            ViewBag.MemberFullNameList = this.GetMemberFullNameList();
+            //ViewBag.CategoryList = this.GetCVDList("contribution", "category");
+            //ViewBag.TransactionTypeList = this.GetCVDList("contribution", "transaction_type");
+            //ViewBag.TransactionModeList = this.GetCVDList("contribution", "transaction_mode");
+            //ViewBag.AccountList = this.GetAccountList();
+            //ViewBag.MemberFullNameList = this.GetMemberFullNameList();
             ViewBag.PageSize = pageSize;
+            ViewBag.PageNumber = 1;
 
-            Person[] list = new[] {
-                        new Person { Id = 10, Name = "10" },
-                        new Person { Id = 25, Name = "25" },
-                        new Person { Id = 50, Name = "50" },
-                        new Person { Id = 100, Name = "100" }
+            SelectList AccountSelectList = new SelectList(AppUtil.GetItemList<int, string>(this.GetAccountList()), "Id", "Name", request.AccountId);
+            ViewBag.AccountSelectList = AccountSelectList;
+
+            SelectList MemberFullNameSelectList = new SelectList(AppUtil.GetItemList<int, string>(this.GetMemberFullNameList()), "Id", "Name", request.MemberPayeeId);
+            ViewBag.MemberFullNameSelectList = MemberFullNameSelectList;
+
+            SelectList CategorySelectList = new SelectList(AppUtil.GetItemList<string, string>(this.GetCVDList("contribution", "category")), "Id", "Name", request.Category);
+            ViewBag.CategorySelectList = CategorySelectList;
+
+            SelectList TransactionTypeSelectList = new SelectList(AppUtil.GetItemList<string, string>(this.GetCVDList("contribution", "transaction_type")), "Id", "Name", request.TransactionType);
+            ViewBag.TransactionTypeSelectList = TransactionTypeSelectList;
+
+            SelectList TransactionModeSelectList = new SelectList(AppUtil.GetItemList<string, string>(this.GetCVDList("contribution", "transaction_mode")), "Id", "Name", request.TransactionMode);
+            ViewBag.TransactionModeSelectList = TransactionModeSelectList;
+
+            Item[] pglist = new[] {
+                        new Item { Id = 10, Name = "10" },
+                        new Item { Id = 25, Name = "25" },
+                        new Item { Id = 50, Name = "50" },
+                        new Item { Id = 100, Name = "100" }
                     };
 
-            SelectList selectList = new SelectList(list, "Id", "Name", pageSize);
+            SelectList selectList = new SelectList(pglist, "Id", "Name", pageSize);
             ViewBag.PageSizeList = selectList;
 
             return View(transactions);
@@ -230,24 +252,37 @@ namespace ChurchWebSiteNetCore.Controllers
 
             var transactions = GetPagedSearchTransactionListV1(1, int.Parse(form["PageSize"]), request);
 
-            ViewBag.CategoryList = this.GetCVDList("contribution", "category");
-            ViewBag.TransactionTypeList = this.GetCVDList("contribution", "transaction_type");
-            ViewBag.TransactionModeList = this.GetCVDList("contribution", "transaction_mode");
-            ViewBag.AccountList = this.GetAccountList();
-            ViewBag.MemberFullNameList = this.GetMemberFullNameList();
+            //ViewBag.CategoryList = this.GetCVDList("contribution", "category");
+            //ViewBag.TransactionTypeList = this.GetCVDList("contribution", "transaction_type");
+            //ViewBag.TransactionModeList = this.GetCVDList("contribution", "transaction_mode");
+            //ViewBag.AccountList = this.GetAccountList();
+            //ViewBag.MemberFullNameList = this.GetMemberFullNameList();
             ViewBag.PageSize = int.Parse(form["PageSize"]);
             ViewBag.PageNumber = int.Parse(form["PageNumber"]);
 
-            
+            SelectList AccountSelectList = new SelectList(AppUtil.GetItemList<int, string>(this.GetAccountList()), "Id", "Name", request.AccountId);
+            ViewBag.AccountSelectList = AccountSelectList;
 
-            Person[] list = new[] {
-                        new Person { Id = 10, Name = "10" },
-                        new Person { Id = 25, Name = "25" },
-                        new Person { Id = 50, Name = "50" },
-                        new Person { Id = 100, Name = "100" }
+            SelectList MemberFullNameSelectList = new SelectList(AppUtil.GetItemList<int, string>(this.GetMemberFullNameList()), "Id", "Name", request.MemberPayeeId);
+            ViewBag.MemberFullNameSelectList = MemberFullNameSelectList;
+
+            SelectList CategorySelectList = new SelectList(AppUtil.GetItemList<string, string>(this.GetCVDList("contribution", "category")), "Id", "Name", request.Category);
+            ViewBag.CategorySelectList = CategorySelectList;
+
+            SelectList TransactionTypeSelectList = new SelectList(AppUtil.GetItemList<string, string>(this.GetCVDList("contribution", "transaction_type")), "Id", "Name", request.TransactionType);
+            ViewBag.TransactionTypeSelectList = TransactionTypeSelectList;
+
+            SelectList TransactionModeSelectList = new SelectList(AppUtil.GetItemList<string, string>(this.GetCVDList("contribution", "transaction_mode")), "Id", "Name", request.TransactionMode);
+            ViewBag.TransactionModeSelectList = TransactionModeSelectList;
+
+            Item[] pglist = new[] {
+                        new Item { Id = 10, Name = "10" },
+                        new Item { Id = 25, Name = "25" },
+                        new Item { Id = 50, Name = "50" },
+                        new Item { Id = 100, Name = "100" }
                     };
 
-            SelectList selectList = new SelectList(list, "Id", "Name", int.Parse(form["PageSize"]));
+            SelectList selectList = new SelectList(pglist, "Id", "Name", pageSize);
             ViewBag.PageSizeList = selectList;
 
             return View("IndexV1", transactions);

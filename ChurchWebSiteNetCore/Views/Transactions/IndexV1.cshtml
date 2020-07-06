@@ -5,11 +5,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     // var pagedList = (IPagedList)ViewBag.Transactions;
     // var pagedList = (IPagedList)Model;
-    var categoryList = ViewBag.CategoryList;
-    var transactionTypeList = ViewBag.TransactionTypeList;
-    var transactionModeList = ViewBag.TransactionModeList;
-    var accountList = ViewBag.AccountList;
-    var memberfullNameList = ViewBag.MemberFullNameList;
+    var categoryList = ViewBag.CategorySelectList;
+    var transactionTypeList = ViewBag.TransactionTypeSelectList;
+    var transactionModeList = ViewBag.TransactionModeSelectList;
+    var accountList = ViewBag.AccountSelectList;
+    var memberfullNameList = ViewBag.MemberFullNameSelectList;
     var pageSize = ViewBag.PageSize;
     var pageSizeList = ViewBag.PageSizeList;
     var pageNumber = ViewBag.PageNumber;
@@ -32,55 +32,25 @@
     <div class="form-group row col-md-12">
         <label for="inputAccountName" class="col-form-label col-md-1">Account Name</label>
         <div class="col-md-3">
-            <select class="form-control" name="AccountId">
-                <option value="">--- All ---</option>
-                @foreach (var accountKvp in accountList)
-                {
-                    <option value=@accountKvp.Key>@accountKvp.Value</option>
-                }
-            </select>
+            @Html.DropDownList("AccountId", (SelectList)accountList, new { @class = "form-control" })
         </div>
         <label for="inputTransType" class="col-form-label col-md-1">Transaction Type</label>
         <div class="col-md-3">
-            <select class="form-control" name="TransType">
-                <option value="">--- All ---</option>
-                @foreach (var type in transactionTypeList)
-                {
-                    <option value="@type.Key">@type.Value</option>
-                }
-            </select>
+            @Html.DropDownList("TransType", (SelectList)transactionTypeList, new { @class = "form-control" })
         </div>
         <label for="inputTransType" class="col-form-label col-md-1">Transaction Mode</label>
         <div class="col-md-3">
-            <select class="form-control" name="TransMode">
-                <option value="">--- All ---</option>
-                @foreach (var mode in transactionModeList)
-                {
-                    <option value="@mode.Key">@mode.Value</option>
-                }
-            </select>
+            @Html.DropDownList("TransMode", (SelectList)transactionModeList, new { @class = "form-control" })
         </div>
     </div>
     <div class="form-group row col-md-12">
         <label for="inputMemberName" class="col-form-label col-md-1">Member Name</label>
         <div class="col-md-3">
-            <select class="form-control" name="MemberName">
-                <option value="">--- All ---</option>
-                @foreach (var member in memberfullNameList)
-                {
-                    <option value="@member.Key">@member.Value</option>
-                }
-            </select>
+            @Html.DropDownList("MemberName", (SelectList)memberfullNameList, new { @class = "form-control" })
         </div>
         <label for="inputCategory" class="col-form-label col-md-1">Category</label>
         <div class="col-md-3">
-            <select class="form-control" name="Category">
-                <option value="">--- All ---</option>
-                @foreach (var category in categoryList)
-                {
-                    <option value="@category.Key">@category.Value</option>
-                }
-            </select>
+            @Html.DropDownList("Category", (SelectList)categoryList, new { @class = "form-control" })
         </div>
         <label for="inputFromDate" class="col-form-label col-md-1">From Date</label>
         <div class="col-md-3">
@@ -117,44 +87,110 @@
     </div>
     <hr />
     <div class="row form-group">
-        <div class="col-md-8">
+        <div class="col-md-4">
 
             @{
-                int pageCount = Model.TotalRecordCount / pageSize;
+                int TotalRecordCountModePageSize = Model.TotalRecordCount % pageSize;
+                int pageCount = (pageSize > Model.TotalRecordCount) ? 1 : ((TotalRecordCountModePageSize > 0) ? ((Model.TotalRecordCount / pageSize) + 1) : (Model.TotalRecordCount / pageSize));
+
+                int previous = 0;  // previous is current -1
+                int next = 0; // current + 1
             }
             @*Html.PagedListPager(pagedList, page => Url.Action("Index", new { page = page, pageSize = pageSize })) *@
             <nav aria-label="...">
                 <ul class="pagination">
                     @{
-                        for (int i = 1; i < pageCount; i++)
+                        bool greaterThanfive = false;
+                        if (pageNumber > 1)
                         {
-                            if (i < pageNumber)
-                            {
+                            previous = (int)pageNumber - 1;
+                        <li><a href="#" class="sourcelink" data-info="@previous">Previous</a></li>
+                        }
+                        else
+                        {
+                        <li class="disabled"><a href="#">Previous</a></li>
+                        }
 
+                        <!--
+                            PageNumber 1 - 3 - 5
+
+                        -->
+
+                        for (int i = 1; i <= pageCount; i++)
+                        {
+                            if (i == pageNumber)
+                            {
+                                <li class="active"><a href="#" class="sourcelink" data-info="@i">@i</a></li>
+                            }
+                            else if (i != 1 && i != 2)
+                            {
+                                if (pageNumber > 2)
+                                {
+
+                                }
                             }
                             else
                             {
                                 <li><a href="#" class="sourcelink" data-info="@i">@i</a></li>
                             }
                         }
+
+
+                        for (int i = 1; i <= pageCount; i++)
+                        {
+                            if (i > 5)
+                            {
+                                greaterThanfive = true;
+                            }
+                            else if (i == pageNumber)
+                            {
+                        <li class="active"><a href="#" class="sourcelink" data-info="@i">@i</a></li>
+                            }
+                            else
+                            {
+                        <li><a href="#" class="sourcelink" data-info="@i">@i</a></li>
+                            }
+                        }
+
+                        if (greaterThanfive)
+                        {
+                        <li class="disabled"><a href="#">...</a></li>
+                            if (pageNumber == pageCount)
+                            {
+                        <li class="active"><a href="#" class="sourcelink" data-info="@pageCount">@pageCount</a></li>
+                            }
+                            else
+                            {
+                        <li><a href="#" class="sourcelink" data-info="@pageCount">@pageCount</a></li>
+                            }
+                        }
+
+                        if (pageNumber == pageCount)
+                        {
+                        <li class="disabled"><a href="#">Next</a></li>
+                        }
+                        else
+                        {
+                            next = (int)pageNumber + 1;
+                        <li><a href="#" class="sourcelink" data-info="@next">Next</a></li>
+                        }
                     }
                 </ul>
             </nav>
-
         </div>
-
+        <div class="col-md-4 justify-content-center align-self-center">Page : @pageNumber</div>
         @Html.Hidden("PageNumber", pageNumber, new { @class = "form-control", @id = "PageNumber" })
-        <div class="col-md-1">
-            @Html.DropDownList("PageSize", (SelectList)pageSizeList, new { @class = "form-control", @id = "Page" })
-            <!--<select class="form-control" name="PageSize" id="Page">
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-        </select>-->
+        <div class="col-md-1 text-center justify-content-center align-self-center">
+                @Html.DropDownList("PageSize", (SelectList)pageSizeList, new { @class = "form-control", @id = "Page" })
+                <!--<select class="form-control" name="PageSize" id="Page">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>-->
         </div>
-        <label for="perPageLabel" class="col-form-label col-md-1">per page</label>
-        <div class="col-md-2 col-form-label align-content-end">@Model.TotalRecordCount total records</div>
+        <div class="col-form-label col-md-1 justify-content-center align-self-center">per page</div>
+        <div class="col-md-2 text-center col-form-label align-content-end justify-content-center align-self-center">@Model.TotalRecordCount total records</div>
     </div>
 </form>
 
