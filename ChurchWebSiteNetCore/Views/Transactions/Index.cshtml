@@ -1,4 +1,4 @@
-﻿@model IPagedList<Church.API.Models.Contribution>
+﻿@model IPagedList<Church.API.Models.AppModel.Response.Transactions.SearchTransactionsResponse>
 
 @{
     ViewData["Title"] = "Index";
@@ -10,6 +10,7 @@
     var transactionModeList = ViewBag.TransactionModeList;
     var accountList = ViewBag.AccountList;
     var memberfullNameList = ViewBag.MemberFullNameList;
+    var pageSize = ViewBag.PageSize;
 }
 
 @using X.PagedList.Mvc.Core; @*import this so we get our HTML Helper*@
@@ -25,75 +26,80 @@
 <h2>Search Transactions</h2>
 <hr />
 
-<form class="form">
+<form class="form" method="post" asp-action="SearchTransaction" novalidate>
     <div class="form-group row col-md-12">
         <label for="inputAccountName" class="col-form-label col-md-1">Account Name</label>
         <div class="col-md-3">
-            <select class="form-control">
-                @foreach (var account in accountList)
+            <select class="form-control" name="AccountId">
+                <option value="">--- All ---</option>
+                @foreach (var accountKvp in accountList)
                 {
-                    <option>@account</option>
+                    <option value=@accountKvp.Key>@accountKvp.Value</option>
                 }
             </select>
         </div>
         <label for="inputTransType" class="col-form-label col-md-1">Transaction Type</label>
         <div class="col-md-3">
-            <select class="form-control">
+            <select class="form-control" name="TransType">
+                <option value="">--- All ---</option>
                 @foreach (var type in transactionTypeList)
                 {
-                    <option>@type.Value</option>
+                    <option value="@type.Key">@type.Value</option>
                 }
             </select>
         </div>
         <label for="inputTransType" class="col-form-label col-md-1">Transaction Mode</label>
         <div class="col-md-3">
-            <select class="form-control">
+            <select class="form-control" name="TransMode">
+                <option value="">--- All ---</option>
                 @foreach (var mode in transactionModeList)
                 {
-                    <option>@mode.Value</option>
+                    <option value="@mode.Key">@mode.Value</option>
                 }
             </select>
         </div>
     </div>
     <div class="form-group row col-md-12">
-        <label for="inputAccountName" class="col-form-label col-md-1">Member Name</label>
+        <label for="inputMemberName" class="col-form-label col-md-1">Member Name</label>
         <div class="col-md-3">
-            <select class="form-control">
+            <select class="form-control" name="MemberName">
+                <option value="">--- All ---</option>
                 @foreach (var member in memberfullNameList)
                 {
-                    <option>@member</option>
+                    <option value="@member.Key">@member.Value</option>
                 }
             </select>
         </div>
         <label for="inputCategory" class="col-form-label col-md-1">Category</label>
         <div class="col-md-3">
-            <select class="form-control">
+            <select class="form-control" name="Category">
+                <option value="">--- All ---</option>
                 @foreach (var category in categoryList)
                 {
-                    <option>@category.Value</option>
+                    <option value="@category.Key">@category.Value</option>
                 }
             </select>
         </div>
         <label for="inputFromDate" class="col-form-label col-md-1">From Date</label>
         <div class="col-md-3">
-            <input class="form-control" type="date" value="2011-08-19" id="example-date-input">
+            <input class="form-control" type="date" id="example-date-input" name="FromDate">
         </div>
     </div>
     <div class="form-group row col-md-12">
-        <label for="inputMemberNameText" class="col-form-label col-md-1"></label>
+        <label for="inputMemberNameText" class="col-form-label col-md-1">Name</label>
         <div class="col-md-3">
-            <input class="form-control" type="text" placeholder="Default input">
+            <input class="form-control" type="text" placeholder="Transaction Name" name = "TransactionName">
         </div>
         <label class="sr-only col-form-label" for="inlineFormInputGroupUsername">CheckNumber</label>
         <div class="input-group col-md-4">
             <div class="input-group-prepend">
                 <div class="input-group-text">#</div>
             </div>
-            <input type="text" class="form-control" id="inlineFormInputGroupUsername" placeholder="Check Number">
+            <input type="text" class="form-control" id="inlineFormInputGroupUsername" placeholder="Check Number" name="CheckNumber">
         </div>
         <label for="inputToDate" class="col-form-label col-md-1">To Date</label>
         <div class="col-md-3">
-            <input class="form-control" type="date" value="2011-08-19" id="example-date-input">
+            <input class="form-control" type="date" id="example-date-input" name="ToDate">
         </div>
     </div>
     <br />
@@ -111,14 +117,14 @@
     <hr />
     <div class="row form-group">
         <div class="col-md-8">
-            @Html.PagedListPager(pagedList, page => Url.Action("Index", new { page = page, pageSize = 10 }))
+            @Html.PagedListPager(pagedList, page => Url.Action("Index", new { page = page, pageSize = pageSize }))
         </div>
         <div class="col-md-1">
-            <select class="form-control">
-                <option>10</option>
-                <option>20</option>
-                <option>50</option>
-                <option>100</option>
+            <select class="form-control" name="PageSize">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
             </select>
         </div>
         <label for="perPageLabel" class="col-form-label col-md-1">per page</label>
@@ -150,36 +156,24 @@
                     @foreach (var transaction in Model)
                     {
                         <tr>
-                            <td>@transaction.Account.AccountName</td>
-                            @{
-                                string contributorName = string.Empty;
-                                if (transaction.Contributor == null)
-                                {
-                                    contributorName = transaction.ContributionName;
-                                }
-                                else
-                                {
-                                    contributorName = string.Concat(transaction.Contributor.FirstName, " ", transaction.Contributor.LastName);
-                                }
-                            }
-                            <td>@contributorName</td>
-                            <td>@categoryList[transaction.Category]</td>
+                            <td>@transaction.AccountName</td>
+                            <td>@transaction.ContributorName</td>
+                            <td>@transaction.Category</td>
                             <td>
-                                @if (transactionTypeList[transaction.TransactionType.ToString()] == "Credit")
+                                @if (transaction.TransactionType == "Credit")
                                 {
-                                    <span class="badge badge-success">@transactionTypeList[transaction.TransactionType.ToString()]</span>
+                                    <span class="badge badge-success">@transaction.TransactionType</span>
                                 }
                                 else
                                 {
-                                    <span class="badge badge-warning">@transactionTypeList[transaction.TransactionType.ToString()]</span>
+                                    <span class="badge badge-warning">@transaction.TransactionType</span>
                                 }
                             </td>
-                            <td>@transactionModeList[transaction.TransactionMode.ToString()]</td>
+                            <td>@transaction.TransactionMode</td>
                             <td>@transaction.CheckNumber</td>
                             <td>@transaction.TransactionDate</td>
                             <td>@transaction.Amount</td>
-                            <!--<td>@transaction.DateAdded</td>
-                            <td>@transaction.DateChanged</td>-->
+                            <!--<td>@transaction.DateAdded</td>-->
                             <td class="text-nowrap">
                                 <a class="btn btn-sm btn-primary" asp-controller="Transactions" asp-action="Details" asp-route-id="@transaction.ContributionId">View</a>
                                 <a class="btn btn-sm btn-primary" asp-controller="Member" asp-action="Details">Edit</a>

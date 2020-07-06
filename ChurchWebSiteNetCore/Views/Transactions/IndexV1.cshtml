@@ -1,0 +1,306 @@
+﻿@model Church.API.Models.AppModel.Response.GenericSearchResponse<List<Church.API.Models.AppModel.Response.Transactions.SearchTransactionsResponse>>
+
+@{
+    ViewData["Title"] = "IndexV1";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // var pagedList = (IPagedList)ViewBag.Transactions;
+    // var pagedList = (IPagedList)Model;
+    var categoryList = ViewBag.CategorySelectList;
+    var transactionTypeList = ViewBag.TransactionTypeSelectList;
+    var transactionModeList = ViewBag.TransactionModeSelectList;
+    var accountList = ViewBag.AccountSelectList;
+    var memberfullNameList = ViewBag.MemberFullNameSelectList;
+    var pageSize = ViewBag.PageSize;
+    var pageSizeList = ViewBag.PageSizeList;
+    var pageNumber = ViewBag.PageNumber;
+}
+
+<!--@using X.PagedList.Mvc.Core; @*import this so we get our HTML Helper*@
+@using X.PagedList; @*import this so we can cast our list to IPagedList (only necessary because ViewBag is dynamic)*@
+@using X.PagedList.Mvc.Common-->
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page"><a asp-controller="Transactions" asp-action="Index">Transactions</a></li>
+    </ol>
+</nav>
+
+<h2>Search Transactions</h2>
+<hr />
+
+<form class="form" method="post" asp-action="SearchTransaction" novalidate>
+    <div class="form-group row col-md-12">
+        <label for="inputAccountName" class="col-form-label col-md-1">Account Name</label>
+        <div class="col-md-3">
+            @Html.DropDownList("AccountId", (SelectList)accountList, new { @class = "form-control" })
+        </div>
+        <label for="inputTransType" class="col-form-label col-md-1">Transaction Type</label>
+        <div class="col-md-3">
+            @Html.DropDownList("TransType", (SelectList)transactionTypeList, new { @class = "form-control" })
+        </div>
+        <label for="inputTransType" class="col-form-label col-md-1">Transaction Mode</label>
+        <div class="col-md-3">
+            @Html.DropDownList("TransMode", (SelectList)transactionModeList, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group row col-md-12">
+        <label for="inputMemberName" class="col-form-label col-md-1">Member Name</label>
+        <div class="col-md-3">
+            @Html.DropDownList("MemberName", (SelectList)memberfullNameList, new { @class = "form-control" })
+        </div>
+        <label for="inputCategory" class="col-form-label col-md-1">Category</label>
+        <div class="col-md-3">
+            @Html.DropDownList("Category", (SelectList)categoryList, new { @class = "form-control" })
+        </div>
+        <label for="inputFromDate" class="col-form-label col-md-1">From Date</label>
+        <div class="col-md-3">
+            <input class="form-control" type="date" id="example-date-input" name="FromDate">
+        </div>
+    </div>
+    <div class="form-group row col-md-12">
+        <label for="inputMemberNameText" class="col-form-label col-md-1">Name</label>
+        <div class="col-md-3">
+            <input class="form-control" type="text" placeholder="Transaction Name" name="TransactionName">
+        </div>
+        <label class="sr-only col-form-label" for="inlineFormInputGroupUsername">CheckNumber</label>
+        <div class="input-group col-md-4">
+            <div class="input-group-prepend">
+                <div class="input-group-text">#</div>
+            </div>
+            <input type="text" class="form-control" id="inlineFormInputGroupUsername" placeholder="Check Number" name="CheckNumber">
+        </div>
+        <label for="inputToDate" class="col-form-label col-md-1">To Date</label>
+        <div class="col-md-3">
+            <input class="form-control" type="date" id="example-date-input" name="ToDate">
+        </div>
+    </div>
+    <br />
+    <div class="div form-group row col-md-12">
+        <div class="col-md-10">
+        </div>
+        <div class="col-md-1">
+            <input class="btn btn-primary" type="submit" value="Search">
+        </div>
+        <div class="col-md-1">
+            <input class="btn btn-dark" type="reset" value="Reset">
+        </div>
+    </div>
+    <hr />
+    <div class="row form-group">
+        <div class="col-md-4">
+
+            @{
+                int TotalRecordCountModePageSize = Model.TotalRecordCount % pageSize;
+                int pageCount = (pageSize > Model.TotalRecordCount) ? 1 : ((TotalRecordCountModePageSize > 0) ? ((Model.TotalRecordCount / pageSize) + 1) : (Model.TotalRecordCount / pageSize));
+
+                int previous = 0;  // previous is current -1
+                int next = 0; // current + 1
+            }
+            @*Html.PagedListPager(pagedList, page => Url.Action("Index", new { page = page, pageSize = pageSize })) *@
+            <nav aria-label="...">
+                <ul class="pagination">
+                    @{
+                        bool greaterThanfive = false;
+                        if (pageNumber > 1)
+                        {
+                            previous = (int)pageNumber - 1;
+                        <li><a href="#" class="sourcelink" data-info="@previous">Previous</a></li>
+                        }
+                        else
+                        {
+                        <li class="disabled"><a href="#">Previous</a></li>
+                        }
+
+                        <!--
+                            PageNumber 1 - 3 - 5
+
+                        -->
+
+                        for (int i = 1; i <= pageCount; i++)
+                        {
+                            if (i == pageNumber)
+                            {
+                                <li class="active"><a href="#" class="sourcelink" data-info="@i">@i</a></li>
+                            }
+                            else if (i != 1 && i != 2)
+                            {
+                                if (pageNumber > 2)
+                                {
+
+                                }
+                            }
+                            else
+                            {
+                                <li><a href="#" class="sourcelink" data-info="@i">@i</a></li>
+                            }
+                        }
+
+
+                        for (int i = 1; i <= pageCount; i++)
+                        {
+                            if (i > 5)
+                            {
+                                greaterThanfive = true;
+                            }
+                            else if (i == pageNumber)
+                            {
+                        <li class="active"><a href="#" class="sourcelink" data-info="@i">@i</a></li>
+                            }
+                            else
+                            {
+                        <li><a href="#" class="sourcelink" data-info="@i">@i</a></li>
+                            }
+                        }
+
+                        if (greaterThanfive)
+                        {
+                        <li class="disabled"><a href="#">...</a></li>
+                            if (pageNumber == pageCount)
+                            {
+                        <li class="active"><a href="#" class="sourcelink" data-info="@pageCount">@pageCount</a></li>
+                            }
+                            else
+                            {
+                        <li><a href="#" class="sourcelink" data-info="@pageCount">@pageCount</a></li>
+                            }
+                        }
+
+                        if (pageNumber == pageCount)
+                        {
+                        <li class="disabled"><a href="#">Next</a></li>
+                        }
+                        else
+                        {
+                            next = (int)pageNumber + 1;
+                        <li><a href="#" class="sourcelink" data-info="@next">Next</a></li>
+                        }
+                    }
+                </ul>
+            </nav>
+        </div>
+        <div class="col-md-4 justify-content-center align-self-center">Page : @pageNumber</div>
+        @Html.Hidden("PageNumber", pageNumber, new { @class = "form-control", @id = "PageNumber" })
+        <div class="col-md-1 text-center justify-content-center align-self-center">
+                @Html.DropDownList("PageSize", (SelectList)pageSizeList, new { @class = "form-control", @id = "Page" })
+                <!--<select class="form-control" name="PageSize" id="Page">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>-->
+        </div>
+        <div class="col-form-label col-md-1 justify-content-center align-self-center">per page</div>
+        <div class="col-md-2 text-center col-form-label align-content-end justify-content-center align-self-center">@Model.TotalRecordCount total records</div>
+    </div>
+</form>
+
+@if (Model != null && Model.Response.Count > 0)
+{
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-striped fixed-table-body">
+                <thead>
+                    <tr>
+                        <th scope="col">Account Name</th>
+                        <th scope="col">Contributor Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Transaction Type</th>
+                        <th scope="col">Transaction Mode</th>
+                        <th scope="col">Check #</th>
+                        <th scope="col">Transaction Date</th>
+                        <th scope="col">Amount</th>
+                        <!--<th scope="col">Date Added</th>
+                        <th scope="col">Date Changed</th>-->
+                        <th scope="col" class="text-nowrap"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var transaction in Model.Response)
+                    {
+                        <tr>
+                            <td>@transaction.AccountName</td>
+                            <td>@transaction.ContributorName</td>
+                            <td>@transaction.Category</td>
+                            <td>
+                                @if (transaction.TransactionType == "Credit")
+                                {
+                                    <span class="badge badge-success">@transaction.TransactionType</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-warning">@transaction.TransactionType</span>
+                                }
+                            </td>
+                            <td>@transaction.TransactionMode</td>
+                            <td>@transaction.CheckNumber</td>
+                            <td>@transaction.TransactionDate</td>
+                            <td>@transaction.Amount</td>
+                            <!--<td>@transaction.DateAdded</td>-->
+                            <td class="text-nowrap">
+                                <a class="btn btn-sm btn-primary" asp-controller="Transactions" asp-action="Details" asp-route-id="@transaction.ContributionId">View</a>
+                                <a class="btn btn-sm btn-primary" asp-controller="Member" asp-action="Details">Edit</a>
+                                <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#exampleModal">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Confirm</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this transaction?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
+@*Html.PagedListPager(pagedList, page => Url.Action("Index", new { page }))*@
+
+    @section scripts {
+
+    <script type="text/javascript">
+        var memberId;
+        var pageNumber;
+        // $('#error-alert').hide();
+        // $('#success-alert').hide();
+        // alert("sdfsdf");
+
+        $('#PageNumber').val(1);
+
+        $("#Page").change(function () {
+            $('#PageNumber').val(1);
+            this.form.submit();
+        });
+
+        
+        $('.sourcelink').click(function () {
+
+            pageNumber = $(this).data('info');
+
+            $('#PageNumber').val(pageNumber);
+
+            var joForm = $('form').eq(0);
+            joForm.submit();
+        });
+
+    </script>
+
+}
+
