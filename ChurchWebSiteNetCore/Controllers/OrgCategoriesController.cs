@@ -58,6 +58,8 @@ namespace ChurchWebSiteNetCore.Controllers
             return orgCategoryList;
         }
 
+        #region Create/Add
+
         public IActionResult Create()
         {
             var model = new OrgCategory { };
@@ -92,6 +94,10 @@ namespace ChurchWebSiteNetCore.Controllers
 
             return PartialView("_AddEditOrgCategoryModalPartial", model);
         }
+
+        #endregion
+
+        #region Edit/Update
 
         public IActionResult Edit(int id)
         {
@@ -130,5 +136,7 @@ namespace ChurchWebSiteNetCore.Controllers
 
             return PartialView("_AddEditOrgCategoryModalPartial", model);
         }
+
+        #endregion
     }
 }

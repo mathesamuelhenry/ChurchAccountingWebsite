@@ -22,12 +22,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ChurchWebSiteNetCore.Controllers
 {
-    public class Person
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    };
-
     public class Item
     {
         public int? Id { get; set; }
@@ -397,12 +391,119 @@ namespace ChurchWebSiteNetCore.Controllers
 
         #endregion
 
-        [HttpPost]
-        public IActionResult Test(IFormCollection form)
+        #region Create
+
+        public IActionResult Create()
         {
-            string name = form["Name"];
-            string country = form["Country"];
-            return View();
+            var model = new Models.Transaction() { };
+
+            SelectList AccountSelectList = new SelectList(AppUtil.GetItemList<int, string>(this.GetAccountList(), "Select One"), "Id", "Name", null);
+            ViewBag.AccountSelectList = AccountSelectList;
+
+            SelectList MemberFullNameSelectList = new SelectList(AppUtil.GetItemList<int, string>(this.GetMemberFullNameList(), "Select One"), "Id", "Name", null);
+            ViewBag.MemberFullNameSelectList = MemberFullNameSelectList;
+
+            SelectList CategorySelectList = new SelectList(AppUtil.GetItemList<string, string>(this.GetCVDList("contribution", "category"), "Select One"), "Id", "Name", null);
+            ViewBag.CategorySelectList = CategorySelectList;
+
+            SelectList TransactionTypeList = new SelectList(AppUtil.GetItemList<string, string>(this.GetCVDList("contribution", "transaction_type"), null, false), "Id", "Name", null);
+            ViewBag.TransactionTypeList = TransactionTypeList;
+
+            SelectList TransactionModeList = new SelectList(AppUtil.GetItemList<string, string>(this.GetCVDList("contribution", "transaction_mode"), null, false), "Id", "Name", null);
+            ViewBag.TransactionModeList = TransactionModeList;
+
+            var typeList = new List<Item>() { new Item() { Id = 1, Name = "Member" }, new Item() { Id = 2, Name = "Company/General Name" } };
+            var TypeList = new SelectList(typeList, "Id", "Name", null);
+            ViewBag.TypeList = TypeList;
+
+            return PartialView("_AddEditTransactionModalPartial", model);
         }
+
+        [HttpPost]
+        public IActionResult Create(Models.Transaction model)
+        {
+            string errorMessage = string.Empty;
+
+            SelectList AccountSelectList = new SelectList(AppUtil.GetItemList<int, string>(this.GetAccountList(), "Select One"), "Id", "Name", null);
+            ViewBag.AccountSelectList = AccountSelectList;
+
+            SelectList MemberFullNameSelectList = new SelectList(AppUtil.GetItemList<int, string>(this.GetMemberFullNameList(), "Select One"), "Id", "Name", null);
+            ViewBag.MemberFullNameSelectList = MemberFullNameSelectList;
+
+            SelectList CategorySelectList = new SelectList(AppUtil.GetItemList<string, string>(this.GetCVDList("contribution", "category"), "Select One"), "Id", "Name", null);
+            ViewBag.CategorySelectList = CategorySelectList;
+
+            SelectList TransactionTypeList = new SelectList(AppUtil.GetItemList<string, string>(this.GetCVDList("contribution", "transaction_type"), null, false), "Id", "Name", null);
+            ViewBag.TransactionTypeList = TransactionTypeList;
+
+            SelectList TransactionModeList = new SelectList(AppUtil.GetItemList<string, string>(this.GetCVDList("contribution", "transaction_mode"), null, false), "Id", "Name", null);
+            ViewBag.TransactionModeList = TransactionModeList;
+
+            var typeList = new List<Item>() { new Item() { Id = 1, Name = "Member Name" }, new Item() { Id = 2, Name = "Company/General Name" } };
+            var TypeList = new SelectList(typeList, "Id", "Name", null);
+            ViewBag.TypeList = TypeList;
+
+            if (ModelState.IsValid)
+            {
+                var addTransactionObj = new Church.API.Models.Contribution() {
+                    AccountId = model.AccountId,
+                    ContributorId = model.MemberId,
+                    ContributionName = model.TransactionName,
+                    Category = model.Category,
+                    TransactionType = model.TransactionType,
+                    TransactionMode = model.TransactionMode,
+                    CheckNumber = model.CheckNumber,
+                    Amount = model.Amount,
+                    TransactionDate = model.TransactionDate,
+                    Note = model.Note
+                };
+
+                var apiContribution = new Church.API.Client.ApiCallerTransaction(_apiUrl.SSChurch);
+
+                try
+                {
+                    apiContribution.PostAddTransaction(addTransactionObj);
+                }
+                catch (Exception ex)
+                {
+                    errorMessage = ex.Message;
+                    ModelState.AddModelError("TransactionError", errorMessage);
+                }
+            }
+
+            ViewBag.ErrorMessage = errorMessage;
+
+            return PartialView("_AddEditTransactionModalPartial", model);
+        }
+
+        /*[HttpPost]
+        public IActionResult Create(Models.Transaction model)
+        {
+            string errorMessage = string.Empty;
+
+            if (ModelState.IsValid)
+            {
+                // TODO : Get Org Id from Claims
+                var orgCatObj = new Church.API.Models.Contribution() { AccountId = model.AccountId, ContributorId = model.MemberId, ContributionName = model.TransactionName, Category = model.Category, CheckNumber = model.CheckNumber, Amount = model.Amount, TransactionMode = model.TransactionMode, Note = model.Note, TransactionDate = model.TransactionDate, TransactionType = model.TransactionType };
+
+                var apiOrgCategory = new Church.API.Client.ApiCallerOrganizationCategory(_apiUrl.SSChurch);
+
+                try
+                {
+                    apiOrgCategory.PostAddOrganizationCategory(orgCatObj);
+                }
+                catch (Exception ex)
+                {
+                    errorMessage = ex.Message;
+                    ModelState.AddModelError("OrgCategoryError", errorMessage);
+                }
+            }
+
+            ViewBag.ErrorMessage = errorMessage;
+
+            return PartialView("_AddEditOrgCategoryModalPartial", model);
+        }*/
+
+        #endregion
     }
 }

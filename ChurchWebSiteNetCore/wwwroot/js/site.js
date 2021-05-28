@@ -42,4 +42,19 @@ $(function () {
             }
         });
     });
+
+    // With the element initially shown, we can hide it slowly:
+    $(".Type").click(function () {
+        alert("sdfsdfsdfs");
+        var type = $("#Type").val();
+        alert(type);
+        if (type == "1") {
+            $("#MemberName").hide();
+            alert(1);
+        }
+        else if (type == "2") {
+            $("#GeneralName").hide();
+            alert(2);
+        }
+    });
 });
