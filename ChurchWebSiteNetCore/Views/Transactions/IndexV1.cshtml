@@ -28,6 +28,14 @@
 <h2>Search Transactions</h2>
 <hr />
 
+<!-- Modal placeholder -->
+<div id="modal-placeholder"></div>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-success float-lg-right" data-toggle="ajax-modal" data-target="#add-transaction" data-url="@Url.Action("Create")">
+    Add Transaction
+</button>
+
 <form class="form" method="post" asp-action="SearchTransaction" novalidate>
     <div class="form-group row col-md-12">
         <label for="inputAccountName" class="col-form-label col-md-1">Account Name</label>
@@ -85,6 +93,7 @@
             <input class="btn btn-dark" type="reset" value="Reset">
         </div>
     </div>
+
     <hr />
     <div class="row form-group">
         <div class="col-md-4">
@@ -104,11 +113,11 @@
                         if (pageNumber > 1)
                         {
                             previous = (int)pageNumber - 1;
-                        <li><a href="#" class="sourcelink" data-info="@previous">Previous</a></li>
+                            <li><a href="#" class="sourcelink" data-info="@previous">Previous</a></li>
                         }
                         else
                         {
-                        <li class="disabled"><a href="#">Previous</a></li>
+                            <li class="disabled"><a href="#">Previous</a></li>
                         }
 
                         <!--
@@ -144,35 +153,35 @@
                             }
                             else if (i == pageNumber)
                             {
-                        <li class="active"><a href="#" class="sourcelink" data-info="@i">@i</a></li>
+                                <li class="active"><a href="#" class="sourcelink" data-info="@i">@i</a></li>
                             }
                             else
                             {
-                        <li><a href="#" class="sourcelink" data-info="@i">@i</a></li>
+                                <li><a href="#" class="sourcelink" data-info="@i">@i</a></li>
                             }
                         }
 
                         if (greaterThanfive)
                         {
-                        <li class="disabled"><a href="#">...</a></li>
+                            <li class="disabled"><a href="#">...</a></li>
                             if (pageNumber == pageCount)
                             {
-                        <li class="active"><a href="#" class="sourcelink" data-info="@pageCount">@pageCount</a></li>
+                                <li class="active"><a href="#" class="sourcelink" data-info="@pageCount">@pageCount</a></li>
                             }
                             else
                             {
-                        <li><a href="#" class="sourcelink" data-info="@pageCount">@pageCount</a></li>
+                                <li><a href="#" class="sourcelink" data-info="@pageCount">@pageCount</a></li>
                             }
                         }
 
                         if (pageNumber == pageCount)
                         {
-                        <li class="disabled"><a href="#">Next</a></li>
+                            <li class="disabled"><a href="#">Next</a></li>
                         }
                         else
                         {
                             next = (int)pageNumber + 1;
-                        <li><a href="#" class="sourcelink" data-info="@next">Next</a></li>
+                            <li><a href="#" class="sourcelink" data-info="@next">Next</a></li>
                         }
                     }
                 </ul>
@@ -181,8 +190,8 @@
         <div class="col-md-4 justify-content-center align-self-center">Page : @pageNumber</div>
         @Html.Hidden("PageNumber", pageNumber, new { @class = "form-control", @id = "PageNumber" })
         <div class="col-md-1 text-center justify-content-center align-self-center">
-                @Html.DropDownList("PageSize", (SelectList)pageSizeList, new { @class = "form-control", @id = "Page" })
-                <!--<select class="form-control" name="PageSize" id="Page">
+            @Html.DropDownList("PageSize", (SelectList)pageSizeList, new { @class = "form-control", @id = "Page" })
+            <!--<select class="form-control" name="PageSize" id="Page">
                 <option value="10">10</option>
                 <option value="25">25</option>
                 <option value="50">50</option>
@@ -249,7 +258,7 @@
     </div>
 }
 
-<!-- Modal -->
+<!-- Modal
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -268,12 +277,12 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->
 
 <!-- output a paging control that lets the user navigation to the previous page, next page, etc -->
 @*Html.PagedListPager(pagedList, page => Url.Action("Index", new { page }))*@
 
-    @section scripts {
+@section scripts {
 
     <script type="text/javascript">
         var memberId;
@@ -289,7 +298,7 @@
             this.form.submit();
         });
 
-        
+
         $('.sourcelink').click(function () {
 
             pageNumber = $(this).data('info');

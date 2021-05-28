@@ -43,21 +43,6 @@ namespace ChurchWebSiteNetCore.Controllers
             return View();
         }
 
-        public SearchBaseResponse<List<Transaction>> GetData(int? startAt, int? maxRecords, string sortBy, string sortOrder)
-        {
-            var apiTransactions = new ApiCallerTransactions("http://localhost:8080/");
-
-            var transactionList = apiTransactions.SearchTransactions(new ChurchLibrary.Model.Base.Request.SearchLimiters()
-            {
-                start_at = startAt.HasValue ? startAt.Value : 1,
-                max_records = maxRecords.HasValue ? maxRecords.Value : 0,
-                sort_by = sortBy,
-                sort_order = sortOrder
-            });
-
-            return transactionList;
-        }
-
         public IActionResult Privacy()
         {
             return View();
